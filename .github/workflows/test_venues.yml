@@ -1,12 +1,12 @@
 # =============================================================================
-# TEST D'ACCÈS AUX ÉVÉNEMENTS ET À LA POLLUTION (lancé à la main)
+# ESSAI DU PROGRAMME DES GRANDES SALLES (lancé à la main)
 # =============================================================================
-# Lance un relevé d'essai du programme des grandes salles sans rien enregistrer
-# affiche ce qu'elle trouve (jamais les clés).
-# Lancement : onglet « Actions » → « Test d'accès sites des grandes salles » → « Run workflow ».
+# Relève le programme des grandes salles sans rien enregistrer et affiche ce
+# qu'il trouve, source par source. Utile si un site change de présentation.
+# Lancement : onglet « Actions » → « Essai programme des grandes salles » → « Run workflow ».
 # =============================================================================
 
-name: Test d'accès sites des grandes salles
+name: Essai programme des grandes salles
 
 on:
   workflow_dispatch:
@@ -22,5 +22,5 @@ jobs:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v6
       - run: uv sync
-      - name: Tester chaque source
+      - name: Relever sans enregistrer
         run: uv run python -m src.ingestion.fetch_venues --essai

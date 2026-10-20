@@ -52,6 +52,7 @@ FLUX = [
     Flux("Parcs relais TCL", "park_and_ride", timedelta(minutes=30), 10, "remplissage des P+R"),
     Flux("Parkings", "parking", timedelta(minutes=30), 30, "remplissage des parkings de la ville"),
     Flux("Trafic routier", "traffic", timedelta(minutes=30), 1, "part du réseau chargé"),
+    Flux("Alertes TCL", "tcl_feed", timedelta(minutes=30), 1, "travaux, déviations et coupures du réseau TCL"),
     Flux("Événements", "events", timedelta(hours=7), 1, "concerts, matchs, soirées à venir"),
     Flux("Pollution", "air_quality", timedelta(hours=7), 1, "vigilance et dépassements de seuil"),
     # Relevé chaque lundi : 8 jours laissent une marge d'une journée

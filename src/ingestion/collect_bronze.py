@@ -23,7 +23,9 @@ table. Toutes les tables partagent la colonne « ingestion_timestamp »
   - data/bronze/park_and_ride/AAAA-MM-JJ.csv → 1 ligne par parc relais TCL et par relevé
   - data/bronze/parking/AAAA-MM-JJ.csv       → 1 ligne par parking et par relevé
   - data/bronze/traffic/AAAA-MM-JJ.csv       → 1 ligne par état du trafic et par relevé
-  (ces trois dernières uniquement si un compte data.grandlyon.com est configuré,
+  - data/bronze/tcl_feed/AAAA-MM-JJ.csv      → 1 ligne par relevé (résumé des alertes TCL ;
+                                               le détail est dans data/reference/tcl_alertes.csv)
+  (ces quatre dernières uniquement si un compte data.grandlyon.com est configuré,
    voir fetch_grandlyon.py)
 
 RÉFÉRENTIELS (choix validé) :
@@ -50,6 +52,9 @@ import httpx
 
 from src.ingestion.fetch_elevation import FICHIER_ALTITUDES
 from src.ingestion.fetch_grandlyon import collecter_mobilite_grandlyon
+from src.ingestion.fetch_tcl import COLONNES_RESUME as COLONNES_TCL
+from src.ingestion.fetch_tcl import DOSSIER_RESUME as DOSSIER_BRONZE_TCL
+from src.ingestion.fetch_tcl import collecter_alertes_tcl
 from src.ingestion.referentiel import mettre_a_jour_fichier
 from src.ingestion.fetch_velov import collecter_etat_stations
 from src.ingestion.fetch_weather import collecter_meteo_actuelle
@@ -223,6 +228,16 @@ def collecter_et_sauvegarder() -> Path:
         if lignes:
             fichier = ajouter_au_fichier_du_jour(dossier, jour, colonnes, lignes)
             print(f"✅ {len(lignes)} lignes « {source} » ajoutées à {fichier}")
+
+    # Étape 6 : Le journal des alertes TCL (une panne de ce flux ne bloque pas le relevé)
+    try:
+        resume_tcl = collecter_alertes_tcl(heure_releve)
+    except Exception as erreur:
+        resume_tcl = None
+        print(f"⚠️ Alertes TCL indisponibles : {erreur}")
+    if resume_tcl is not None:
+        ajouter_au_fichier_du_jour(DOSSIER_BRONZE_TCL, jour, COLONNES_TCL, [resume_tcl])
+        print(f"✅ Alertes TCL : {resume_tcl['nb_alertes']} en cours")
 
     return fichier_velov
 

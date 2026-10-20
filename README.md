@@ -14,9 +14,11 @@ par GitHub Actions.
 | `data/bronze/park_and_ride/` | Un fichier CSV par jour : places libres de chaque parc relais TCL à chaque relevé |
 | `data/bronze/parking/` | Un fichier CSV par jour : places libres de chaque parking de la Métropole à chaque relevé |
 | `data/bronze/traffic/` | Un fichier CSV par jour : résumé de l'état du trafic routier à chaque relevé |
+| `data/bronze/tcl_feed/` | Un fichier CSV par jour : résumé des alertes TCL à chaque relevé (nombre d'alertes en cours, heure de mise à jour du flux) |
 | `data/bronze/events/` | Un fichier CSV par jour : événements des 14 prochains jours autour de Lyon (OpenAgenda : Ville de Lyon, Shotgun, Villeurbanne…), relevés à chaque démarrage du robot |
 | `data/bronze/events_salles/` | Un fichier CSV par semaine : programme des grandes salles (LDLC Arena et Halle Tony Garnier : sites officiels ; Groupama Stadium : matchs de l'OL et de l'OL Lyonnes, concerts ; Matmut Stadium de Gerland : LOU Rugby), mêmes colonnes que `events/`, relevé chaque lundi |
 | `data/bronze/air_quality/` | Un fichier CSV par jour : vigilance pollution du bassin lyonnais et dépassements de seuil (Atmo Auvergne-Rhône-Alpes, flux ouverts) |
+| `data/reference/tcl_alertes.csv` | Journal des alertes trafic TCL (travaux, déviations, coupures) : une ligne par alerte, avec ses dates prévues, son heure d'apparition et de disparition |
 | `data/reference/lieux_evenements.csv` | Référentiel des salles et stades : nom, latitude, longitude |
 | `data/reference/stations_altitude.csv` | Altitude de chaque station (Open-Meteo) |
 | `data/reference/velov_stations.csv` | Référentiel des stations Vélo'v : nom, latitude, longitude, altitude |
@@ -48,7 +50,7 @@ uv sync
 uv run python -m src.ingestion.collect_bronze
 ```
 
-Sources : [data.grandlyon.com](https://data.grandlyon.com) (parcs relais TCL, parkings, trafic),
+Sources : [data.grandlyon.com](https://data.grandlyon.com) (parcs relais TCL, parkings, trafic, alertes trafic TCL),
 [Calendrier scolaire](https://data.education.gouv.fr/explore/dataset/fr-en-calendrier-scolaire/),
 [GBFS Vélo'v](https://download.data.grandlyon.com/files/rdata/jcd_jcdecaux.jcdvelov/gbfs.json),
 [Open-Meteo](https://open-meteo.com).

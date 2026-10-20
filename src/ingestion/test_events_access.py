@@ -100,14 +100,14 @@ def tester_atmo_aura_ouvert() -> None:
     print("\n=== Atmo Auvergne-Rhône-Alpes, flux ouverts (sans compte)")
     url = "https://sig.atmo-auvergnerhonealpes.fr/geoserver/wfs"
     essais = [
-        ("ind_aura:agol_indices_2021_7J", "code_zone='69123'"),
+        ("ind_aura:agol_indices_2021_7J", None),
         ("alrt3j_aura:new_alerte_3j", None),
         ("aura:vigilances_today", None),
         ("aura:vigilances_tomorrow", None),
     ]
     for couche, filtre in essais:
         parametres = {"SERVICE": "WFS", "VERSION": "2.0.0", "REQUEST": "GetFeature", "typeNames": couche,
-                      "outputFormat": "application/json", "count": 10}
+                      "outputFormat": "application/json", "count": 2}
         if filtre:
             parametres["CQL_FILTER"] = filtre
         print(f"\n--- {couche} ({filtre or 'sans filtre'})")
@@ -118,8 +118,17 @@ def tester_atmo_aura_ouvert() -> None:
             print("  erreur :", erreur)
             continue
         print("  code :", reponse.status_code, "; total :", contenu.get("totalFeatures") or contenu.get("numberMatched"))
-        for element in contenu.get("features", [])[:4]:
+        for element in contenu.get("features", [])[:2]:
             print("  ", apercu(json.dumps(element.get("properties"), ensure_ascii=False), 600))
+        if couche != "ind_aura:agol_indices_2021_7J":
+            parametres.pop("count")
+            tout = httpx.get(url, params=parametres, timeout=120).json().get("features", [])
+            zones = sorted({str(e["properties"].get("lib_zone") or e["properties"].get("lib_court_zone")) for e in tout})
+            print("  zones :", zones)
+            for e in tout:
+                zone = str(e["properties"].get("lib_zone") or e["properties"].get("lib_court_zone"))
+                if "lyon" in zone.lower():
+                    print("   LYON :", apercu(json.dumps(e["properties"], ensure_ascii=False), 400))
 
 
 if __name__ == "__main__":

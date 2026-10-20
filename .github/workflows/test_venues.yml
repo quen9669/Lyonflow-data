@@ -1,0 +1,26 @@
+# =============================================================================
+# TEST D'ACCÈS AUX ÉVÉNEMENTS ET À LA POLLUTION (lancé à la main)
+# =============================================================================
+# Lance une collecte d'essai (sites des salles et stades) sans rien enregistrer et
+# affiche ce qu'elle trouve (jamais les clés).
+# Lancement : onglet « Actions » → « Test d'accès sites des grandes salles » → « Run workflow ».
+# =============================================================================
+
+name: Test d'accès sites des grandes salles
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - run: uv sync
+      - name: Tester chaque source
+        run: uv run python -m src.ingestion.test_venues_access

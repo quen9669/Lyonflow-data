@@ -58,7 +58,19 @@ jobs:
         continue-on-error: true
         run: uv run python -m src.ingestion.fetch_elevation
 
+      # Le calendrier des vacances scolaires (académie de Lyon) est relu à chaque
+      # démarrage : le fichier ne change que si le ministère publie du nouveau.
+      # Si le site du ministère est en panne, la collecte continue quand même.
+      - name: Mettre à jour le calendrier des vacances scolaires
+        continue-on-error: true
+        run: uv run python -m src.ingestion.fetch_school_holidays
+
       - name: Collecter pile toutes les 15 minutes pendant 5h30
+        # Compte data.grandlyon.com (P+R, parkings, trafic), stocké dans les « secrets »
+        # du dépôt : invisible dans le code et masqué dans les journaux d'exécution.
+        env:
+          GRANDLYON_LOGIN: ${{ secrets.GRANDLYON_LOGIN }}
+          GRANDLYON_PASSWORD: ${{ secrets.GRANDLYON_PASSWORD }}
         run: |
           git config user.name "lyonflow-collecte[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"

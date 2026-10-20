@@ -20,6 +20,11 @@ table. Toutes les tables partagent la colonne « ingestion_timestamp »
   - data/bronze/velov/AAAA-MM-JJ.csv   → 466 lignes par relevé (une par station)
   - data/bronze/weather/AAAA-MM-JJ.csv → 1 ligne par relevé (météo)
   - data/bronze/feed/AAAA-MM-JJ.csv    → 1 ligne par relevé (infos sur le flux Vélo'v)
+  - data/bronze/park_and_ride/AAAA-MM-JJ.csv → 1 ligne par parc relais TCL et par relevé
+  - data/bronze/parking/AAAA-MM-JJ.csv       → 1 ligne par parking et par relevé
+  - data/bronze/traffic/AAAA-MM-JJ.csv       → 1 ligne par état du trafic et par relevé
+  (ces trois dernières uniquement si un compte data.grandlyon.com est configuré,
+   voir fetch_grandlyon.py)
 
 ORGANISATION DES FICHIERS :
 Chaque passage AJOUTE ses lignes à la fin des fichiers du jour, sans jamais
@@ -38,6 +43,7 @@ from pathlib import Path
 import httpx
 
 from src.ingestion.fetch_elevation import FICHIER_ALTITUDES
+from src.ingestion.fetch_grandlyon import collecter_mobilite_grandlyon
 from src.ingestion.fetch_velov import collecter_etat_stations
 from src.ingestion.fetch_weather import collecter_meteo_actuelle
 
@@ -45,6 +51,24 @@ from src.ingestion.fetch_weather import collecter_meteo_actuelle
 DOSSIER_BRONZE_VELOV = Path("data/bronze/velov")
 DOSSIER_BRONZE_METEO = Path("data/bronze/weather")
 DOSSIER_BRONZE_FLUX = Path("data/bronze/feed")
+
+# Données de mobilité du Grand Lyon : pour chaque source, son dossier et ses colonnes
+SOURCES_GRANDLYON = {
+    "parcs_relais": (
+        Path("data/bronze/park_and_ride"),
+        ["ingestion_timestamp", "parc_id", "parc_name", "lat", "lon", "capacity",
+         "available_places_raw", "last_update_api"],
+    ),
+    "parkings": (
+        Path("data/bronze/parking"),
+        ["ingestion_timestamp", "parking_id", "parking_name", "lat", "lon", "capacity",
+         "available_places_raw", "status_raw", "last_update_api"],
+    ),
+    "trafic": (
+        Path("data/bronze/traffic"),
+        ["ingestion_timestamp", "traffic_status_raw", "nb_segments", "total_length_m"],
+    ),
+}
 
 # Ordre fixe des colonnes dans les fichiers CSV.
 # Le fixer explicitement garantit que tous les fichiers ont la même structure,
@@ -167,6 +191,16 @@ def collecter_et_sauvegarder() -> Path:
         meteo["ingestion_timestamp"] = heure_releve
         fichier_meteo = ajouter_au_fichier_du_jour(DOSSIER_BRONZE_METEO, jour, COLONNES_METEO, [meteo])
         print(f"✅ Météo ajoutée à {fichier_meteo}")
+
+    # Étape 5 : Les données de mobilité du Grand Lyon (si un compte est configuré)
+    mobilite = collecter_mobilite_grandlyon()
+    for source, lignes in (mobilite or {}).items():
+        dossier, colonnes = SOURCES_GRANDLYON[source]
+        for ligne in lignes:
+            ligne["ingestion_timestamp"] = heure_releve
+        if lignes:
+            fichier = ajouter_au_fichier_du_jour(dossier, jour, colonnes, lignes)
+            print(f"✅ {len(lignes)} lignes « {source} » ajoutées à {fichier}")
 
     return fichier_velov
 

@@ -1,55 +1,38 @@
 """
 DIAGNOSTIC DES ALERTES TRAFIC TCL (data.grandlyon.com)
 ======================================================
-Cherche, dans le catalogue du Grand Lyon, les jeux de données liés aux
-perturbations TCL, puis affiche quelques alertes en exemple
+Télécharge toutes les alertes TCL en cours et affiche un résumé chiffré
+(par type, cause, mode, gravité) pour préparer leur collecte
 (jamais les identifiants).
 
 Lancement : uv run python -m src.ingestion.test_tcl_access
 """
 
+import collections
 import json
-import re
 
 import httpx
 
-from src.ingestion.fetch_grandlyon import URL_WFS_GRANDLYON, lire_identifiants
+from src.ingestion.fetch_grandlyon import lire_identifiants
+
+URL_ALERTES = "https://download.data.grandlyon.com/ws/rdata/tcl_sytral.tclalertetrafic_2/all.json"
 
 if __name__ == "__main__":
-    identifiants = lire_identifiants()
-    print("Identifiants trouvés :", "oui" if identifiants else "NON")
-    with httpx.Client(auth=identifiants, timeout=90, follow_redirects=True) as client:
-        # 1. Catalogue : couches dont le nom évoque les TCL ou les alertes
-        reponse = client.get(URL_WFS_GRANDLYON, params={"SERVICE": "WFS", "REQUEST": "GetCapabilities"})
-        print("GetCapabilities :", reponse.status_code, len(reponse.text), "caractères")
-        couches = sorted(set(re.findall(r"<(?:wfs:)?Name>([^<]+)</(?:wfs:)?Name>", reponse.text)))
-        tcl = [c for c in couches if re.search(r"tcl|alerte|perturb|sytral", c, re.I)]
-        print(f"{len(couches)} couches, dont {len(tcl)} liées aux TCL :")
-        for c in tcl:
-            print("  ", c)
-
-        # 2. Exemples de contenu pour les couches d'alertes
-        candidates = [c for c in tcl if re.search(r"alerte|perturb", c, re.I)] or ["sytral:tcl_sytral.tclalertetrafic_2"]
-        for couche in candidates:
-            r = client.get(URL_WFS_GRANDLYON, params={
-                "SERVICE": "WFS", "VERSION": "2.0.0", "REQUEST": "GetFeature",
-                "typename": couche, "outputFormat": "application/json"})
-            print(f"\n=== {couche} : {r.status_code}")
-            if r.status_code != 200:
-                print(r.text[:300])
-                continue
-            try:
-                features = r.json().get("features", [])
-            except ValueError:
-                print(r.text[:300])
-                continue
-            print(f"{len(features)} alertes")
-            for f in features[:6]:
-                print(json.dumps(f.get("properties"), ensure_ascii=False)[:700])
-
-        # 3. Ancienne interface JSON du portail
-        for nom in ("tcl_sytral.tclalertetrafic_2", "tcl_sytral.tclalertetrafic"):
-            url = f"https://download.data.grandlyon.com/ws/rdata/{nom}/all.json"
-            r = client.get(url, params={"maxfeatures": 5})
-            print(f"\n=== {url} : {r.status_code}")
-            print(r.text[:1500])
+    with httpx.Client(auth=lire_identifiants(), timeout=90, follow_redirects=True) as client:
+        reponse = client.get(URL_ALERTES, params={"maxfeatures": 1000})
+        print("Statut :", reponse.status_code, len(reponse.content), "octets")
+        alertes = reponse.json()["values"]
+        print(len(alertes), "alertes")
+        for champ in ("type", "cause", "mode", "typeseverite", "niveauseverite", "typeobjet", "n"):
+            print(f"\n{champ} :", collections.Counter(a.get(champ) for a in alertes).most_common(15))
+        print("\nlignes :", collections.Counter(a.get("ligne_com") for a in alertes).most_common(60))
+        print("\nlongueur message moyenne :", sum(len(a.get("message") or "") for a in alertes) // max(len(alertes), 1))
+        print("last_update_fme :", sorted({a.get("last_update_fme") for a in alertes})[-3:])
+        # Alertes « fortes » (interruptions, perturbations) en exemple
+        fortes = [a for a in alertes if a.get("type") != "Information"]
+        print(f"\n{len(fortes)} alertes hors « Information », exemples :")
+        for a in fortes[:15]:
+            a = {k: v for k, v in a.items() if k != "message"}
+            print(json.dumps(a, ensure_ascii=False)[:400])
+        # Plusieurs lignes pour une même alerte ?
+        print("\nlisteobjet à plusieurs valeurs :", [a["listeobjet"] for a in alertes if "," in (a.get("listeobjet") or "")][:10])

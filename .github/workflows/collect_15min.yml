@@ -71,10 +71,7 @@ jobs:
       - name: Relever les événements et la pollution
         continue-on-error: true
         env:
-          TICKETMASTER_API_KEY: ${{ secrets.TICKETMASTER_API_KEY }}
           OPENAGENDA_API_KEY: ${{ secrets.OPENAGENDA_API_KEY }}
-          ATMO_LOGIN: ${{ secrets.ATMO_LOGIN }}
-          ATMO_PASSWORD: ${{ secrets.ATMO_PASSWORD }}
         run: uv run python -m src.ingestion.fetch_events
 
       - name: Collecter pile toutes les 15 minutes pendant 5h30

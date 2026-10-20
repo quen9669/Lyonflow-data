@@ -3,55 +3,73 @@ COLLECTE DES ÉVÉNEMENTS ET DE LA POLLUTION (Couche Bronze)
 ===========================================================
 
 OBJECTIF MÉTIER :
-Un concert à la LDLC Arena, un match au Groupama Stadium ou un pic de pollution
-changent l'usage des Vélo'v. Pour que l'IA apprenne ces effets, on archive,
-plusieurs fois par jour (à chaque démarrage du robot, environ toutes les 5h30) :
-  - les ÉVÉNEMENTS des 14 prochains jours autour de Lyon (concerts, matchs,
-    spectacles), avec leur lieu, leur date et leur heure ;
-  - l'INDICE DE QUALITÉ DE L'AIR de Lyon (aujourd'hui et demain) et les
-    ÉPISODES DE POLLUTION annoncés (vigilance jaune, orange ou rouge).
+Un concert, une soirée, un spectacle ou un pic de pollution changent l'usage des
+Vélo'v. Pour que l'IA apprenne ces effets, on archive à chaque démarrage du robot
+(environ toutes les 5h30) :
+  - les ÉVÉNEMENTS des 14 prochains jours autour de Lyon, avec leur lieu,
+    leur date et leur heure ;
+  - la VIGILANCE POLLUTION du bassin lyonnais (aujourd'hui et demain) et les
+    DÉPASSEMENTS DE SEUIL annoncés par polluant (hier, aujourd'hui, demain).
 On garde chaque relevé : une annonce peut changer (report, annulation),
 et l'historique des annonces sert aussi à l'apprentissage.
 
-SOURCES (comptes gratuits, clés rangées dans les « secrets » GitHub) :
-  - Ticketmaster Discovery API (TICKETMASTER_API_KEY) : grandes salles et stades ;
-  - OpenAgenda (OPENAGENDA_API_KEY) : agendas culturels publics, ajouté après
-    le choix des agendas à suivre ;
-  - Atmo Data, fédération Atmo France (ATMO_LOGIN / ATMO_PASSWORD) : indice ATMO
-    par commune (publié chaque jour vers 14h) et épisodes de pollution.
-Une source sans clé ou en panne est simplement ignorée : la collecte Vélo'v
+SOURCES (vérifiées depuis le robot le 20/10/2026) :
+  - OpenAgenda (clé gratuite OPENAGENDA_API_KEY) : agendas publics. On suit
+    l'agenda officiel de Lyon, Shotgun (billetterie de concerts et soirées),
+    l'agenda culturel de Villeurbanne et « Événements à Lyon ».
+    Ticketmaster a été testé puis écarté : son service ne contient aucun
+    événement à Lyon (seulement 32 en France, presque tous à Paris).
+  - Atmo Auvergne-Rhône-Alpes, flux ouverts sans compte : niveau de vigilance
+    (vert, jaune, orange, rouge) et dépassements de seuil de la zone
+    « Bassin Lyon Nord-Isère ». C'est ce niveau qui déclenche les mesures de la
+    préfecture (circulation différenciée, conseils de limiter l'effort physique).
+Une source en panne ou sans clé est simplement ignorée : la collecte Vélo'v
 n'est jamais bloquée.
 
 RANGEMENT (même principe que les stations) :
-  - data/bronze/events/AAAA-MM-JJ.csv    : un relevé des événements à venir,
-  - data/bronze/air_quality/AAAA-MM-JJ.csv : indice et épisodes de pollution,
-  - data/reference/lieux_evenements.csv  : nom et position de chaque lieu,
+  - data/bronze/events/AAAA-MM-JJ.csv      : un relevé des événements à venir,
+  - data/bronze/air_quality/AAAA-MM-JJ.csv : vigilance et dépassements de seuil,
+  - data/reference/lieux_evenements.csv    : nom et position de chaque lieu,
     historisés (date de début, fin 2099), pour ne pas les répéter à chaque relevé.
 
 Lancement : uv run python -m src.ingestion.fetch_events
 """
 
 import csv
+import math
 import os
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 import httpx
 
 from src.ingestion.referentiel import mettre_a_jour_fichier
 
 # --- Paramètres --------------------------------------------------------------
-# Centre de Lyon (place Bellecour) et rayon de recherche : 25 km couvre
-# Décines (Groupama Stadium), Villeurbanne, Gerland, Vaulx-en-Velin…
-CENTRE_LYON = "45.7578,4.8320"
+# Centre de Lyon (place Bellecour) et rayon gardé : 25 km couvre Décines
+# (Groupama Stadium, LDLC Arena), Villeurbanne, Gerland, Vaulx-en-Velin…
+CENTRE_LYON = (45.7578, 4.8320)
 RAYON_KM = 25
 JOURS_A_VENIR = 14
 
-URL_TICKETMASTER = "https://app.ticketmaster.com/discovery/v2/events.json"
-URL_ATMO = "https://admindata.atmo-france.org/api"
-CODE_INSEE_LYON = "69123"
+URL_OPENAGENDA = "https://api.openagenda.com/v2/agendas/{uid}/events"
+# Agendas suivis : identifiant → nom lisible (sert aussi de « catégorie » de l'événement)
+AGENDAS_SUIVIS = {
+    84768140: "Ville de Lyon",
+    9969608: "Shotgun (concerts et soirées)",
+    1168665: "Villeurbanne culturel",
+    482183: "Événements à Lyon",
+}
+# OpenAgenda donne au plus 300 événements par page ; 20 pages suffisent largement
+TAILLE_PAGE = 300
+PAGES_MAX = 20
 
-DELAI_ATTENTE_MAX_SECONDES = 60
+URL_ATMO_AURA = "https://sig.atmo-auvergnerhonealpes.fr/geoserver/wfs"
+ZONE_LYON = 2003  # « Bassin Lyon Nord-Isère »
+
+DELAI_ATTENTE_MAX_SECONDES = 120
+HEURE_LYON = ZoneInfo("Europe/Paris")
 
 DOSSIER_EVENEMENTS = Path("data/bronze/events")
 DOSSIER_AIR = Path("data/bronze/air_quality")
@@ -59,132 +77,138 @@ FICHIER_LIEUX = Path("data/reference/lieux_evenements.csv")
 
 COLONNES_EVENEMENTS = [
     "ingestion_timestamp", "source", "event_id", "venue_id", "event_name",
-    "category", "genre", "start_utc", "start_local", "status",
+    "category", "genre", "start_utc", "end_utc", "status",
 ]
 COLONNES_AIR = [
     "ingestion_timestamp", "type", "date_echeance", "zone", "polluant", "indice", "niveau",
 ]
 
+# Statuts OpenAgenda (documentation officielle) traduits en mots
+STATUTS_OPENAGENDA = {1: "programme", 2: "reporte_date", 3: "en_ligne", 4: "reporte", 5: "complet", 6: "annule"}
 
-# --- Ticketmaster ------------------------------------------------------------
-def extraire_evenements_ticketmaster(reponse: dict) -> tuple[list[dict], list[dict]]:
+
+def distance_km(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
+    """Distance à vol d'oiseau en kilomètres (formule de haversine)."""
+    p1, p2 = math.radians(lat1), math.radians(lat2)
+    dp, dl = p2 - p1, math.radians(lon2 - lon1)
+    a = math.sin(dp / 2) ** 2 + math.cos(p1) * math.cos(p2) * math.sin(dl / 2) ** 2
+    return 2 * 6371 * math.asin(math.sqrt(a))
+
+
+def texte(valeur) -> str:
+    """OpenAgenda écrit les textes par langue ({"fr": "…"}) : on garde le français."""
+    if isinstance(valeur, dict):
+        return valeur.get("fr") or next(iter(valeur.values()), "")
+    return valeur or ""
+
+
+# --- OpenAgenda --------------------------------------------------------------
+def extraire_evenements_openagenda(
+    evenements_api: list[dict], agenda: str, debut: datetime, fin: datetime
+) -> tuple[list[dict], list[dict]]:
     """
-    Transformer une page de réponse Ticketmaster en (événements, lieux).
-    Un événement sans lieu géolocalisé est gardé, mais sans lieu.
+    Transformer des événements OpenAgenda en (séances, lieux).
+    Un même événement peut avoir plusieurs séances (horaires) : une ligne par séance
+    comprise dans la période, et seulement si le lieu est à moins de 25 km de Lyon.
     """
-    evenements, lieux = [], []
-    for evenement in reponse.get("_embedded", {}).get("events", []):
-        debut = evenement.get("dates", {}).get("start", {})
-        classement = (evenement.get("classifications") or [{}])[0]
-        lieu = (evenement.get("_embedded", {}).get("venues") or [{}])[0]
-        position = lieu.get("location") or {}
-        venue_id = f"tm:{lieu['id']}" if lieu.get("id") else ""
-        if venue_id and position.get("latitude"):
-            lieux.append({
-                "venue_id": venue_id, "venue_name": lieu.get("name"),
-                "lat": position.get("latitude"), "lon": position.get("longitude"),
+    seances, lieux = [], []
+    for evenement in evenements_api:
+        lieu = evenement.get("location") or {}
+        if lieu.get("latitude") is None or lieu.get("longitude") is None:
+            continue
+        if distance_km(*CENTRE_LYON, lieu["latitude"], lieu["longitude"]) > RAYON_KM:
+            continue
+        venue_id = f"oa:{lieu.get('uid')}"
+        lieux.append({"venue_id": venue_id, "venue_name": lieu.get("name"),
+                      "lat": lieu["latitude"], "lon": lieu["longitude"]})
+        mots_cles = evenement.get("keywords") or {}
+        mots_cles = mots_cles.get("fr", []) if isinstance(mots_cles, dict) else mots_cles
+        for horaire in evenement.get("timings") or []:
+            commence = datetime.fromisoformat(horaire["begin"]).astimezone(timezone.utc)
+            if not debut <= commence <= fin:
+                continue
+            seances.append({
+                "source": "openagenda",
+                "event_id": f"oa:{evenement.get('uid')}:{commence:%Y%m%d%H%M}",
+                "venue_id": venue_id,
+                "event_name": texte(evenement.get("title")),
+                "category": agenda,
+                "genre": ", ".join(mots_cles[:3]),
+                "start_utc": str(commence),
+                "end_utc": str(datetime.fromisoformat(horaire["end"]).astimezone(timezone.utc)) if horaire.get("end") else "",
+                "status": STATUTS_OPENAGENDA.get(evenement.get("status"), evenement.get("status") or ""),
             })
-        heure_locale = debut.get("localTime") or ""
-        evenements.append({
-            "source": "ticketmaster",
-            "event_id": f"tm:{evenement.get('id')}",
-            "venue_id": venue_id,
-            "event_name": evenement.get("name"),
-            "category": (classement.get("segment") or {}).get("name"),
-            "genre": (classement.get("genre") or {}).get("name"),
-            "start_utc": debut.get("dateTime") or "",
-            "start_local": f"{debut.get('localDate', '')} {heure_locale}".strip(),
-            "status": evenement.get("dates", {}).get("status", {}).get("code"),
-        })
-    return evenements, lieux
+    return seances, lieux
 
 
-def collecter_ticketmaster(cle: str, maintenant: datetime) -> tuple[list[dict], list[dict]]:
-    """Tous les événements des 14 prochains jours dans un rayon de 25 km (page par page)."""
-    parametres = {
-        "apikey": cle,
-        "latlong": CENTRE_LYON,
-        "radius": RAYON_KM,
-        "unit": "km",
-        "size": 200,
-        "sort": "date,asc",
-        "startDateTime": maintenant.strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "endDateTime": (maintenant + timedelta(days=JOURS_A_VENIR)).strftime("%Y-%m-%dT%H:%M:%SZ"),
-    }
-    evenements, lieux = [], []
+def collecter_openagenda(cle: str, maintenant: datetime) -> tuple[list[dict], list[dict]]:
+    """Séances des 14 prochains jours dans un rayon de 25 km, pour chaque agenda suivi."""
+    fin = maintenant + timedelta(days=JOURS_A_VENIR)
+    # Petit « rectangle » autour de Lyon pour que le serveur ne renvoie que la région
+    ecart_lat, ecart_lon = RAYON_KM / 111, RAYON_KM / 78
+    seances, lieux = [], []
     with httpx.Client(timeout=DELAI_ATTENTE_MAX_SECONDES) as client:
-        # Ticketmaster ne donne pas plus de 1 000 résultats (5 pages de 200) : largement assez
-        for page in range(5):
-            reponse = client.get(URL_TICKETMASTER, params={**parametres, "page": page})
-            reponse.raise_for_status()
-            contenu = reponse.json()
-            nouveaux, nouveaux_lieux = extraire_evenements_ticketmaster(contenu)
-            evenements += nouveaux
-            lieux += nouveaux_lieux
-            if page + 1 >= contenu.get("page", {}).get("totalPages", 0):
-                break
-    return evenements, lieux
+        for uid, nom_agenda in AGENDAS_SUIVIS.items():
+            parametres = {
+                "key": cle, "size": TAILLE_PAGE, "detailed": 1,
+                "timings[gte]": maintenant.isoformat(), "timings[lte]": fin.isoformat(),
+                "geo[northEast][lat]": CENTRE_LYON[0] + ecart_lat, "geo[northEast][lng]": CENTRE_LYON[1] + ecart_lon,
+                "geo[southWest][lat]": CENTRE_LYON[0] - ecart_lat, "geo[southWest][lng]": CENTRE_LYON[1] - ecart_lon,
+            }
+            suite = None
+            for _ in range(PAGES_MAX):
+                reponse = client.get(URL_OPENAGENDA.format(uid=uid), params=[
+                    *parametres.items(), *(("after[]", v) for v in (suite or []))
+                ])
+                reponse.raise_for_status()
+                contenu = reponse.json()
+                nouvelles, nouveaux_lieux = extraire_evenements_openagenda(
+                    contenu.get("events", []), nom_agenda, maintenant, fin)
+                seances += nouvelles
+                lieux += nouveaux_lieux
+                suite = contenu.get("after")
+                if not suite or not contenu.get("events"):
+                    break
+    # Un même événement peut être publié dans plusieurs agendas : on le garde une fois
+    uniques = {seance["event_id"]: seance for seance in seances}
+    return list(uniques.values()), lieux
 
 
-# --- Atmo Data ---------------------------------------------------------------
-def jeton_atmo(client: httpx.Client, login: str, mot_de_passe: str) -> str:
-    """Se connecter à Atmo Data et obtenir un jeton d'accès (valable quelques heures)."""
-    reponse = client.post(f"{URL_ATMO}/login", json={"username": login, "password": mot_de_passe})
+# --- Atmo Auvergne-Rhône-Alpes (flux ouverts) --------------------------------
+def lire_couche_atmo(client: httpx.Client, couche: str) -> list[dict]:
+    """Télécharger une couche du serveur cartographique d'Atmo AURA (format GeoJSON)."""
+    reponse = client.get(URL_ATMO_AURA, params={
+        "SERVICE": "WFS", "VERSION": "2.0.0", "REQUEST": "GetFeature",
+        "typeNames": couche, "outputFormat": "application/json",
+    })
     reponse.raise_for_status()
-    return reponse.json()["token"]
+    return [element["properties"] for element in reponse.json()["features"]]
 
 
-def extraire_indices_atmo(reponse: dict) -> list[dict]:
-    """Indice ATMO de Lyon : 1 (bon) à 6 (extrêmement mauvais), pour chaque jour publié."""
-    lignes = []
-    for element in reponse.get("features", []):
-        infos = element.get("properties", {})
-        lignes.append({
-            "type": "indice",
-            "date_echeance": infos.get("date_ech"),
-            "zone": infos.get("lib_zone") or infos.get("code_zone"),
-            "polluant": "",
-            "indice": infos.get("code_qual"),
-            "niveau": infos.get("lib_qual"),
-        })
-    return lignes
+def extraire_vigilance(proprietes: list[dict], jour: str) -> list[dict]:
+    """Niveau de vigilance de la zone lyonnaise : 1 = vert, 2 = jaune, 3 = orange, 4 = rouge."""
+    return [{
+        "type": "vigilance", "date_echeance": jour, "zone": p.get("lib_court_zone"),
+        "polluant": p.get("polluant_id") or "", "indice": p.get("niveau_id"), "niveau": p.get("niveau_vigilance"),
+    } for p in proprietes if p.get("id_zone") == ZONE_LYON]
 
 
-def extraire_episodes_atmo(reponse: dict) -> list[dict]:
-    """Épisodes de pollution annoncés ou constatés (niveau : information, alerte…)."""
-    lignes = []
-    for element in reponse.get("features", []):
-        infos = element.get("properties", {})
-        lignes.append({
-            "type": "episode",
-            "date_echeance": infos.get("date_ech"),
-            "zone": infos.get("lib_zone"),
-            "polluant": infos.get("lib_pol"),
-            "indice": infos.get("code_etat") or infos.get("code_pol"),
-            "niveau": infos.get("etat"),
-        })
-    return lignes
+def extraire_depassements(proprietes: list[dict]) -> list[dict]:
+    """État de chaque polluant pour la zone lyonnaise (« PAS DE DEPASSEMENT » ou procédure en cours)."""
+    return [{
+        "type": "depassement", "date_echeance": str(p.get("date_ech", ""))[:10], "zone": p.get("lib_zone"),
+        "polluant": p.get("lib_pol"), "indice": p.get("code_pol"), "niveau": p.get("etat"),
+    } for p in proprietes if p.get("code_zone") == ZONE_LYON]
 
 
-def collecter_atmo(login: str, mot_de_passe: str, maintenant: datetime) -> list[dict]:
-    """Indice de Lyon pour aujourd'hui et demain + épisodes des 3 derniers / prochains jours."""
+def collecter_pollution(maintenant: datetime) -> list[dict]:
+    """Vigilance d'aujourd'hui et de demain + dépassements de seuil sur 3 jours (zone de Lyon)."""
+    aujourdhui = maintenant.astimezone(HEURE_LYON).date()
     with httpx.Client(timeout=DELAI_ATTENTE_MAX_SECONDES) as client:
-        entetes = {"Authorization": f"Bearer {jeton_atmo(client, login, mot_de_passe)}"}
-        lignes = []
-        for jour in (maintenant.date(), maintenant.date() + timedelta(days=1)):
-            reponse = client.get(
-                f"{URL_ATMO}/v2/data/indices/atmo",
-                params={"format": "geojson", "date": jour.isoformat(), "code_zone": CODE_INSEE_LYON},
-                headers=entetes,
-            )
-            reponse.raise_for_status()
-            lignes += extraire_indices_atmo(reponse.json())
-        reponse = client.get(
-            f"{URL_ATMO}/v2/data/episodes/3jours", params={"format": "geojson"}, headers=entetes
-        )
-        reponse.raise_for_status()
-        # On ne garde que les épisodes qui concernent le bassin lyonnais
-        lignes += [e for e in extraire_episodes_atmo(reponse.json()) if "lyon" in str(e["zone"]).lower()]
+        lignes = extraire_vigilance(lire_couche_atmo(client, "aura:vigilances_today"), str(aujourdhui))
+        lignes += extraire_vigilance(lire_couche_atmo(client, "aura:vigilances_tomorrow"),
+                                     str(aujourdhui + timedelta(days=1)))
+        lignes += extraire_depassements(lire_couche_atmo(client, "alrt3j_aura:new_alerte_3j"))
     return lignes
 
 
@@ -204,31 +228,27 @@ def ajouter_au_fichier_du_jour(dossier: Path, colonnes: list[str], lignes: list[
 
 
 def collecter_evenements_et_pollution() -> None:
-    """Relever toutes les sources configurées. Une source en panne n'empêche pas les autres."""
+    """Relever toutes les sources. Une source en panne n'empêche pas les autres."""
     maintenant = datetime.now(timezone.utc)
 
-    cle_ticketmaster = os.environ.get("TICKETMASTER_API_KEY")
-    if cle_ticketmaster:
+    cle = os.environ.get("OPENAGENDA_API_KEY")
+    if cle:
         try:
-            evenements, lieux = collecter_ticketmaster(cle_ticketmaster, maintenant)
+            seances, lieux = collecter_openagenda(cle, maintenant)
             mettre_a_jour_fichier(FICHIER_LIEUX, "venue_id", ["venue_name", "lat", "lon"], lieux, str(maintenant))
-            ajouter_au_fichier_du_jour(DOSSIER_EVENEMENTS, COLONNES_EVENEMENTS, evenements, maintenant)
-            print(f"Ticketmaster : {len(evenements)} événements à venir, {len({l['venue_id'] for l in lieux})} lieux")
+            ajouter_au_fichier_du_jour(DOSSIER_EVENEMENTS, COLONNES_EVENEMENTS, seances, maintenant)
+            print(f"OpenAgenda : {len(seances)} séances à venir, {len({l['venue_id'] for l in lieux})} lieux")
         except (httpx.HTTPError, KeyError, ValueError) as erreur:
-            print(f"⚠️  Ticketmaster indisponible : {erreur}")
+            print(f"⚠️  OpenAgenda indisponible : {erreur}")
     else:
-        print("Ticketmaster : pas de clé, ignoré")
+        print("OpenAgenda : pas de clé, ignoré")
 
-    login, mot_de_passe = os.environ.get("ATMO_LOGIN"), os.environ.get("ATMO_PASSWORD")
-    if login and mot_de_passe:
-        try:
-            lignes = collecter_atmo(login, mot_de_passe, maintenant)
-            ajouter_au_fichier_du_jour(DOSSIER_AIR, COLONNES_AIR, lignes, maintenant)
-            print(f"Atmo : {len(lignes)} lignes (indices et épisodes)")
-        except (httpx.HTTPError, KeyError, ValueError) as erreur:
-            print(f"⚠️  Atmo indisponible : {erreur}")
-    else:
-        print("Atmo : pas d'identifiants, ignoré")
+    try:
+        lignes = collecter_pollution(maintenant)
+        ajouter_au_fichier_du_jour(DOSSIER_AIR, COLONNES_AIR, lignes, maintenant)
+        print(f"Atmo AURA : {len(lignes)} lignes (vigilance et dépassements)")
+    except (httpx.HTTPError, KeyError, ValueError) as erreur:
+        print(f"⚠️  Atmo AURA indisponible : {erreur}")
 
 
 if __name__ == "__main__":

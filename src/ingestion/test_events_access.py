@@ -96,39 +96,30 @@ def tester_atmo() -> None:
 
 
 def tester_atmo_aura_ouvert() -> None:
-    """Flux ouverts (sans compte) d'Atmo Auvergne-Rhône-Alpes : couches utiles et un exemple de chaque."""
-    import re
+    """Flux ouverts (sans compte) d'Atmo Auvergne-Rhône-Alpes : un exemple de chaque couche utile."""
     print("\n=== Atmo Auvergne-Rhône-Alpes, flux ouverts (sans compte)")
     url = "https://sig.atmo-auvergnerhonealpes.fr/geoserver/wfs"
-    reponse = httpx.get(url, params={"SERVICE": "WFS", "REQUEST": "GetCapabilities"}, timeout=60)
-    couches = re.findall(r"<(?:wfs:)?Name>([^<]+)</(?:wfs:)?Name>", reponse.text)
-    utiles = [c for c in couches if re.search(r"alrt|alert|epis|vigil|proc|ind_aura|indice", c, re.I)]
-    print(f"{len(couches)} couches, dont {len(utiles)} utiles :", utiles)
-    for couche in utiles:
-        reponse = httpx.get(url, params={
-            "SERVICE": "WFS", "VERSION": "2.0.0", "REQUEST": "GetFeature", "typeNames": couche,
-            "outputFormat": "application/json", "count": 3,
-        }, timeout=60)
-        print(f"\n--- {couche} : {reponse.status_code}")
+    essais = [
+        ("ind_aura:agol_indices_2021_7J", "code_zone='69123'"),
+        ("alrt3j_aura:new_alerte_3j", None),
+        ("aura:vigilances_today", None),
+        ("aura:vigilances_tomorrow", None),
+    ]
+    for couche, filtre in essais:
+        parametres = {"SERVICE": "WFS", "VERSION": "2.0.0", "REQUEST": "GetFeature", "typeNames": couche,
+                      "outputFormat": "application/json", "count": 10}
+        if filtre:
+            parametres["CQL_FILTER"] = filtre
+        print(f"\n--- {couche} ({filtre or 'sans filtre'})")
         try:
+            reponse = httpx.get(url, params=parametres, timeout=120)
             contenu = reponse.json()
-            print("  nombre total :", contenu.get("totalFeatures") or contenu.get("numberMatched"))
-            for element in contenu.get("features", [])[:2]:
-                print("  ", apercu(json.dumps(element.get("properties"), ensure_ascii=False), 700))
-        except ValueError:
-            print("  ", apercu(reponse.text, 300))
-    # Indice de Lyon dans la couche des 7 jours
-    reponse = httpx.get(url, params={
-        "SERVICE": "WFS", "VERSION": "2.0.0", "REQUEST": "GetFeature",
-        "typeNames": "ind_aura:agol_indices_2021_7J", "outputFormat": "application/json",
-        "CQL_FILTER": "code_zone='69123'",
-    }, timeout=60)
-    print("\n--- Lyon (69123) dans agol_indices_2021_7J :", reponse.status_code)
-    try:
-        for element in reponse.json().get("features", []):
-            print("  ", apercu(json.dumps(element.get("properties"), ensure_ascii=False), 500))
-    except ValueError:
-        print("  ", apercu(reponse.text, 300))
+        except (httpx.HTTPError, ValueError) as erreur:
+            print("  erreur :", erreur)
+            continue
+        print("  code :", reponse.status_code, "; total :", contenu.get("totalFeatures") or contenu.get("numberMatched"))
+        for element in contenu.get("features", [])[:4]:
+            print("  ", apercu(json.dumps(element.get("properties"), ensure_ascii=False), 600))
 
 
 if __name__ == "__main__":

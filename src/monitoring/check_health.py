@@ -44,6 +44,7 @@ class Flux:
 # Les flux du quart d'heure ont droit à 30 minutes (un relevé manqué passe,
 # deux d'affilée déclenchent l'alerte). Les événements et la pollution sont
 # relevés à chaque démarrage de passage, environ toutes les 5h30 : 7 heures.
+# Le programme des grandes salles est relevé une fois par semaine : 8 jours.
 FLUX = [
     Flux("Vélo'v", "velov", timedelta(minutes=30), 400, "vélos et places de chaque station"),
     Flux("Météo", "weather", timedelta(minutes=30), 1, "pluie, température, vent"),
@@ -53,6 +54,8 @@ FLUX = [
     Flux("Trafic routier", "traffic", timedelta(minutes=30), 1, "part du réseau chargé"),
     Flux("Événements", "events", timedelta(hours=7), 1, "concerts, matchs, soirées à venir"),
     Flux("Pollution", "air_quality", timedelta(hours=7), 1, "vigilance et dépassements de seuil"),
+    # Relevé chaque lundi : 8 jours laissent une marge d'une journée
+    Flux("Grandes salles", "events_salles", timedelta(days=8), 20, "matchs OL, LOU, ASVEL et concerts des grandes salles"),
 ]
 
 # Au-delà, l'heure annoncée par l'opérateur Vélo'v est jugée figée

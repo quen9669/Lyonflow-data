@@ -38,7 +38,7 @@ def test_ldlc_arena_concert_et_match():
     lignes = lire_ldlc_arena(PAGE_LDLC)
     assert sorted((l["event_name"], l["category"], l["event_id"]) for l in lignes) == [
         ("LDLC ASVEL / Partizan", "match", "salle:ldlc-arena:202610281900"),
-        ("Saez", "concert", "salle:ldlc-arena:202612091930"),
+        ("Saez", "spectacle", "salle:ldlc-arena:202612091930"),
     ]
     assert all(l["venue_id"] == "salle:ldlc-arena" and l["source"] == "salles" for l in lignes)
 

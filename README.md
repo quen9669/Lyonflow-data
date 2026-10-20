@@ -15,6 +15,7 @@ par GitHub Actions.
 | `data/bronze/parking/` | Un fichier CSV par jour : places libres de chaque parking de la Métropole à chaque relevé |
 | `data/bronze/traffic/` | Un fichier CSV par jour : résumé de l'état du trafic routier à chaque relevé |
 | `data/bronze/events/` | Un fichier CSV par jour : événements des 14 prochains jours autour de Lyon (OpenAgenda : Ville de Lyon, Shotgun, Villeurbanne…), relevés à chaque démarrage du robot |
+| `data/bronze/events_salles/` | Un fichier CSV par semaine : programme des grandes salles (LDLC Arena, Groupama Stadium, Halle Tony Garnier, Matmut Stadium de Gerland), mêmes colonnes que `events/`, relevé chaque lundi |
 | `data/bronze/air_quality/` | Un fichier CSV par jour : vigilance pollution du bassin lyonnais et dépassements de seuil (Atmo Auvergne-Rhône-Alpes, flux ouverts) |
 | `data/reference/lieux_evenements.csv` | Référentiel des salles et stades : nom, latitude, longitude |
 | `data/reference/stations_altitude.csv` | Altitude de chaque station (Open-Meteo) |
@@ -26,6 +27,7 @@ par GitHub Actions.
 | `src/monitoring/` | Contrôle de santé des flux |
 | `.github/workflows/collect_15min.yml` | Le robot de collecte : chaque passage dure 5h30 puis relance le suivant |
 | `.github/workflows/health_check.yml` | Contrôle de santé, toutes les heures |
+| `.github/workflows/collect_venues_weekly.yml` | Programme des grandes salles, chaque lundi |
 
 Toutes les tables se relient par la colonne `ingestion_timestamp`.
 
@@ -33,7 +35,7 @@ Les relevés ne contiennent que l'identifiant de chaque station ou parking. Le n
 
 ## Surveillance
 
-Toutes les heures, le workflow « Santé des flux » vérifie que chaque source a été relevée récemment (30 minutes au plus pour les flux du quart d'heure, 7 heures pour les événements et la pollution) et complètement. En cas de problème, il s'affiche en rouge et GitHub envoie un e-mail. Le détail se lit dans le résumé du passage.
+Toutes les heures, le workflow « Santé des flux » vérifie que chaque source a été relevée récemment (30 minutes au plus pour les flux du quart d'heure, 7 heures pour les événements et la pollution, 8 jours pour le programme des grandes salles) et complètement. En cas de problème, il s'affiche en rouge et GitHub envoie un e-mail. Le détail se lit dans le résumé du passage.
 
 ```bash
 uv run python -m src.monitoring.check_health

@@ -1,7 +1,7 @@
 # =============================================================================
 # TEST D'ACCÈS AUX ÉVÉNEMENTS ET À LA POLLUTION (lancé à la main)
 # =============================================================================
-# Lance une collecte d'essai (sites des salles et stades) sans rien enregistrer et
+# Lance un relevé d'essai du programme des grandes salles sans rien enregistrer
 # affiche ce qu'elle trouve (jamais les clés).
 # Lancement : onglet « Actions » → « Test d'accès sites des grandes salles » → « Run workflow ».
 # =============================================================================

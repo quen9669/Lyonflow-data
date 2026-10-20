@@ -15,7 +15,8 @@ SOURCES (vérifiées depuis le robot le 20/10/2026) :
     spectacles et matchs de l'ASVEL dans la salle.
   - OL Vallée, calendrier officiel du Groupama Stadium et de la LDLC Arena :
     on y prend les matchs de l'OL et de l'OL Lyonnes (liens vers la billetterie
-    de l'OL). Les événements de la LDLC Arena viennent déjà de son site.
+    de l'OL ; catégorie « match_feminin » pour l'OL Lyonnes, au public plus
+    réduit). Les événements de la LDLC Arena viennent déjà de son site.
   - JamBase, agenda de concerts : la Halle Tony Garnier (son site ne publie pas
     de dates lisibles) et les concerts au Groupama Stadium.
   - LOU Rugby, site officiel : les prochains matchs à Gerland (Matmut Stadium).
@@ -138,7 +139,8 @@ def lire_ldlc_arena(page_html: str) -> list[dict]:
         if not e.get("startDate"):
             continue
         nom = nettoyer(str(e.get("name", "")))
-        categorie = "match" if "ASVEL" in nom.upper() else "concert"
+        # Concerts, humour, spectacles, sport hors basket : « spectacle »
+        categorie = "match" if "ASVEL" in nom.upper() else "spectacle"
         lignes.append(ligne("ldlc-arena", nom, categorie, heure_de_lyon_en_utc(e["startDate"]), "ldlcarena.com"))
     return lignes
 
@@ -160,7 +162,9 @@ def lire_ol_vallee(page_html: str) -> list[dict]:
             continue
         debut = datetime(int(annee), MOIS[mois.lower()], int(jour), int(heure), int(minute), tzinfo=HEURE_LYON)
         nom = nettoyer(titre.group(1))
-        lignes.append(ligne("groupama-stadium", nom, "match", debut.astimezone(timezone.utc), "olvallee.fr"))
+        # L'OL Lyonnes attire moins de public : catégorie à part pour l'estimer à part
+        categorie = "match_feminin" if "LYONNES" in nom.upper() else "match"
+        lignes.append(ligne("groupama-stadium", nom, categorie, debut.astimezone(timezone.utc), "olvallee.fr"))
     return lignes
 
 
@@ -191,7 +195,7 @@ def lire_match_lou(cle: str, page_html: str) -> dict:
     texte = nettoyer(page_html)
     date_affichee = f"{jour}/{mois}/{annee}"
     autour = texte[max(0, texte.find(date_affichee) - 200):texte.find(date_affichee) + 300] if date_affichee in texte else texte
-    horaire = re.search(r"\b([01]?\d|2[0-3])\s*[h:]\s*([0-5]\d)\b", autour)
+    horaire = re.search(r"\b([01]?\d|2[0-3])\s*[h:]\s*([0-5]\d)\b", autour, re.I)
     heure, minute, statut = (int(horaire.group(1)), int(horaire.group(2)), "programme") if horaire else (16, 0, "heure_a_confirmer")
     debut = datetime(int(annee), int(mois), int(jour), heure, minute, tzinfo=HEURE_LYON)
     nom = f"LOU Rugby - {adversaire.replace('-', ' ').title()}"

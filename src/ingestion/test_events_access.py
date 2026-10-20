@@ -18,7 +18,6 @@ import httpx
 from src.ingestion.fetch_events import (
     CODE_INSEE_LYON,
     URL_ATMO,
-    collecter_ticketmaster,
 )
 
 
@@ -31,19 +30,25 @@ def tester_ticketmaster() -> None:
     print("\n=== Ticketmaster : clé", "trouvée" if cle else "ABSENTE")
     if not cle:
         return
-    try:
-        evenements, lieux = collecter_ticketmaster(cle, datetime.now(timezone.utc))
-    except httpx.HTTPStatusError as erreur:
-        print(f"Refusé : {erreur.response.status_code} → {apercu(erreur.response.text, 300)}")
-        return
-    print(f"{len(evenements)} événements, {len({l['venue_id'] for l in lieux})} lieux")
-    comptes = {}
-    for lieu in lieux:
-        comptes[lieu["venue_name"]] = comptes.get(lieu["venue_name"], 0) + 1
-    for nom, nombre in sorted(comptes.items(), key=lambda x: -x[1])[:25]:
-        print(f"  {nombre:>4}  {nom}")
-    for evenement in evenements[:5]:
-        print("  exemple :", evenement)
+    url = "https://app.ticketmaster.com/discovery/v2/events.json"
+    for nom, parametres in (
+        ("rayon 25 km autour de Lyon", {"latlong": "45.7578,4.8320", "radius": 25, "unit": "km"}),
+        ("pays France", {"countryCode": "FR"}),
+        ("ville Lyon", {"city": "Lyon"}),
+        ("mot-clé Lyon", {"keyword": "Lyon"}),
+        ("lieux à Lyon", None),
+    ):
+        if parametres is None:
+            reponse = httpx.get("https://app.ticketmaster.com/discovery/v2/venues.json",
+                                params={"apikey": cle, "keyword": "Lyon", "size": 20}, timeout=60)
+        else:
+            reponse = httpx.get(url, params={"apikey": cle, "size": 5, **parametres}, timeout=60)
+        contenu = reponse.json() if reponse.status_code == 200 else {}
+        total = contenu.get("page", {}).get("totalElements")
+        print(f"{nom} : {reponse.status_code}, {total} résultats")
+        for element in list(contenu.get("_embedded", {}).values())[0][:5] if contenu.get("_embedded") else []:
+            lieu = (element.get("_embedded", {}).get("venues") or [element])[0]
+            print("   ", element.get("name"), "|", lieu.get("name"), "|", (lieu.get("city") or {}).get("name"))
 
 
 def tester_openagenda() -> None:
@@ -51,19 +56,28 @@ def tester_openagenda() -> None:
     print("\n=== OpenAgenda : clé", "trouvée" if cle else "ABSENTE")
     if not cle:
         return
-    reponse = httpx.get(
-        "https://api.openagenda.com/v2/agendas",
-        params={"key": cle, "search": "Lyon", "size": 50, "sort": "recentlyAddedEvents.desc"},
-        timeout=60,
-    )
-    print("Liste des agendas « Lyon » :", reponse.status_code)
-    if reponse.status_code != 200:
-        print(apercu(reponse.text, 300))
-        return
-    contenu = reponse.json()
-    print("Total :", contenu.get("total"))
-    for agenda in contenu.get("agendas", []):
-        print(f"  uid={agenda.get('uid')}  officiel={agenda.get('official')}  {agenda.get('title')}")
+    for recherche in ("Lyon", "Ville de Lyon", "Métropole de Lyon", "concerts Lyon"):
+        reponse = httpx.get("https://api.openagenda.com/v2/agendas",
+                            params={"key": cle, "search": recherche, "size": 20, "official": 1}, timeout=60)
+        agendas = reponse.json().get("agendas", []) if reponse.status_code == 200 else []
+        print(f"Agendas officiels « {recherche} » :", [(a.get("uid"), a.get("title")) for a in agendas])
+    # Événements à venir de quelques agendas candidats
+    for uid in (482183, 9969608, 1168665, 28050806):
+        reponse = httpx.get(f"https://api.openagenda.com/v2/agendas/{uid}/events",
+                            params={"key": cle, "size": 5, "relative[]": "upcoming", "detailed": 1}, timeout=60)
+        print(f"\nAgenda {uid} : {reponse.status_code}")
+        if reponse.status_code != 200:
+            print("  ", apercu(reponse.text, 300))
+            continue
+        contenu = reponse.json()
+        print("  événements à venir :", contenu.get("total"))
+        for evenement in contenu.get("events", [])[:3]:
+            lieu = evenement.get("location") or {}
+            print("   ", apercu(json.dumps({
+                "titre": evenement.get("title"), "debut": (evenement.get("firstTiming") or {}).get("begin"),
+                "lieu": lieu.get("name"), "ville": lieu.get("city"), "lat": lieu.get("latitude"),
+                "lon": lieu.get("longitude"), "cles": list(evenement)[:40],
+            }, ensure_ascii=False), 900))
 
 
 def tester_atmo() -> None:
@@ -135,4 +149,3 @@ if __name__ == "__main__":
     tester_ticketmaster()
     tester_openagenda()
     tester_atmo()
-    tester_atmo_aura_ouvert()

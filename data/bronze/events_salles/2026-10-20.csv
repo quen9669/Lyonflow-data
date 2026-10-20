@@ -151,3 +151,193 @@ ingestion_timestamp,source,event_id,venue_id,event_name,category,genre,start_utc
 2026-10-20 15:56:57.991143+00:00,salles,salle:ldlc-arena:202803251930,salle:ldlc-arena,Roméo & Juliette,spectacle,ldlcarena.com,2028-03-25 19:30:00+00:00,,programme
 2026-10-20 15:56:57.991143+00:00,salles,salle:ldlc-arena:202803261300,salle:ldlc-arena,Roméo & Juliette,spectacle,ldlcarena.com,2028-03-26 13:00:00+00:00,,programme
 2026-10-20 15:56:57.991143+00:00,salles,salle:ldlc-arena:202804191800,salle:ldlc-arena,Adèle Castillon,spectacle,ldlcarena.com,2028-04-19 18:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202610211000,salle:ldlc-arena,Grand prix Auvergne-Rhône-Alpes,spectacle,ldlcarena.com,2026-10-21 10:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202610221000,salle:ldlc-arena,Grand prix Auvergne-Rhône-Alpes,spectacle,ldlcarena.com,2026-10-22 10:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202610231000,salle:ldlc-arena,Grand prix Auvergne-Rhône-Alpes,spectacle,ldlcarena.com,2026-10-23 10:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202610240930,salle:ldlc-arena,Grand prix Auvergne-Rhône-Alpes,spectacle,ldlcarena.com,2026-10-24 09:30:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:groupama-stadium:202610241900,salle:groupama-stadium,OL LYONNES / OLYMPIQUE DE MARSEILLE,match_feminin,olvallee.fr,2026-10-24 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:halle-tony-garnier:202610242000,salle:halle-tony-garnier,NUIT ENCORE X 23:59,concert,halle-tony-garnier.com,2026-10-24 20:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202610251100,salle:ldlc-arena,Grand prix Auvergne-Rhône-Alpes,spectacle,ldlcarena.com,2026-10-25 11:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202610281900,salle:ldlc-arena,LDLC ASVEL / Partizan Belgrade,match,ldlcarena.com,2026-10-28 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:groupama-stadium:202610282000,salle:groupama-stadium,OL LYONNES / FC INTERNAZIONALE MILANO,match_feminin,olvallee.fr,2026-10-28 20:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:halle-tony-garnier:202610291400,salle:halle-tony-garnier,SALON DES VIGNERONS INDEPENDANTS,salon,halle-tony-garnier.com,2026-10-29 14:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202610291900,salle:ldlc-arena,Legend Tour By Trade Republic,spectacle,ldlcarena.com,2026-10-29 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:halle-tony-garnier:202610300900,salle:halle-tony-garnier,SALON DES VIGNERONS INDEPENDANTS,salon,halle-tony-garnier.com,2026-10-30 09:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202610301900,salle:ldlc-arena,LDLC ASVEL / Kosner Baskonia Vitoria-Gasteiz,match,ldlcarena.com,2026-10-30 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:halle-tony-garnier:202610310900,salle:halle-tony-garnier,SALON DES VIGNERONS INDEPENDANTS,salon,halle-tony-garnier.com,2026-10-31 09:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:matmut-stadium-gerland:202610311500,salle:matmut-stadium-gerland,LOU Rugby - Vannes,match,lourugby.fr,2026-10-31 15:00:00+00:00,,heure_a_confirmer
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202610311900,salle:ldlc-arena,Dabeull live band,spectacle,ldlcarena.com,2026-10-31 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:groupama-stadium:202610311945,salle:groupama-stadium,OL / ANGERS SCO,match,olvallee.fr,2026-10-31 19:45:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:halle-tony-garnier:202611010900,salle:halle-tony-garnier,SALON DES VIGNERONS INDEPENDANTS,salon,halle-tony-garnier.com,2026-11-01 09:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202611021900,salle:ldlc-arena,GIMS,spectacle,ldlcarena.com,2026-11-02 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202611031900,salle:ldlc-arena,GIMS,spectacle,ldlcarena.com,2026-11-03 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202611051900,salle:ldlc-arena,LDLC ASVEL / FC Bayern Munich,match,ldlcarena.com,2026-11-05 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:halle-tony-garnier:202611051900,salle:halle-tony-garnier,DJADJA & DINAZ,concert,halle-tony-garnier.com,2026-11-05 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202611061900,salle:ldlc-arena,BIGFLO & OLI,spectacle,ldlcarena.com,2026-11-06 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:halle-tony-garnier:202611061900,salle:halle-tony-garnier,DJADJA & DINAZ,concert,halle-tony-garnier.com,2026-11-06 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202611071900,salle:ldlc-arena,BIGFLO & OLI,spectacle,ldlcarena.com,2026-11-07 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:halle-tony-garnier:202611071900,salle:halle-tony-garnier,JOSMAN,concert,halle-tony-garnier.com,2026-11-07 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:halle-tony-garnier:202611101900,salle:halle-tony-garnier,THE WORLD OF HANS ZIMMER,concert,halle-tony-garnier.com,2026-11-10 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202611111900,salle:ldlc-arena,pitbull,spectacle,ldlcarena.com,2026-11-11 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:halle-tony-garnier:202611111900,salle:halle-tony-garnier,MALIK BENTALHA,spectacle,halle-tony-garnier.com,2026-11-11 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202611131930,salle:ldlc-arena,LDLC ASVEL / Besiktas,match,ldlcarena.com,2026-11-13 19:30:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202611141900,salle:ldlc-arena,Vanessa Paradis,spectacle,ldlcarena.com,2026-11-14 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202611151800,salle:ldlc-arena,Deep Purple,spectacle,ldlcarena.com,2026-11-15 18:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202611161900,salle:ldlc-arena,Orelsan,spectacle,ldlcarena.com,2026-11-16 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202611171900,salle:ldlc-arena,Orelsan,spectacle,ldlcarena.com,2026-11-17 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:halle-tony-garnier:202611191900,salle:halle-tony-garnier,L'HERITAGE GOLDMAN 2,concert,halle-tony-garnier.com,2026-11-19 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202611201900,salle:ldlc-arena,PLK,spectacle,ldlcarena.com,2026-11-20 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202611211900,salle:ldlc-arena,Redouane Bougheraba,spectacle,ldlcarena.com,2026-11-21 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202611221700,salle:ldlc-arena,Helena,spectacle,ldlcarena.com,2026-11-22 17:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202611231900,salle:ldlc-arena,Placebo,spectacle,ldlcarena.com,2026-11-23 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202611241945,salle:ldlc-arena,LDLC ASVEL / Olimpia Milan,match,ldlcarena.com,2026-11-24 19:45:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202611261900,salle:ldlc-arena,Ben Mazué,spectacle,ldlcarena.com,2026-11-26 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:groupama-stadium:202611262000,salle:groupama-stadium,OL / LILLESTRØM,match,olvallee.fr,2026-11-26 20:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:matmut-stadium-gerland:202611281500,salle:matmut-stadium-gerland,LOU Rugby - Stade Toulousain,match,lourugby.fr,2026-11-28 15:00:00+00:00,,heure_a_confirmer
+2026-10-20 16:02:32.849891+00:00,salles,salle:groupama-stadium:202611291945,salle:groupama-stadium,OL - AS Monaco (Ligue 1),match,fixturedownload.com,2026-11-29 19:45:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202611301900,salle:ldlc-arena,Bryan Adams,spectacle,ldlcarena.com,2026-11-30 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202612021900,salle:ldlc-arena,Eric Serra Live,spectacle,ldlcarena.com,2026-12-02 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202612031900,salle:ldlc-arena,Florent Pagny,spectacle,ldlcarena.com,2026-12-03 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:halle-tony-garnier:202612041900,salle:halle-tony-garnier,disiz,concert,halle-tony-garnier.com,2026-12-04 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202612052000,salle:ldlc-arena,Mustapha El Atrassi,spectacle,ldlcarena.com,2026-12-05 20:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202612061800,salle:ldlc-arena,Papa Roach,spectacle,ldlcarena.com,2026-12-06 18:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202612091930,salle:ldlc-arena,Saez,spectacle,ldlcarena.com,2026-12-09 19:30:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202612101900,salle:ldlc-arena,Gaëtan Roussel,spectacle,ldlcarena.com,2026-12-10 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:groupama-stadium:202612102000,salle:groupama-stadium,OL / UNION ST GILLOISE,match,olvallee.fr,2026-12-10 20:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202612111900,salle:ldlc-arena,Christophe Maé,spectacle,ldlcarena.com,2026-12-11 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:halle-tony-garnier:202612112030,salle:halle-tony-garnier,FACE2FACE ALL NIGHT LONG,concert,halle-tony-garnier.com,2026-12-11 20:30:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202612121900,salle:ldlc-arena,PLK,spectacle,ldlcarena.com,2026-12-12 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202612131500,salle:ldlc-arena,The Jeff Panacloc Company,spectacle,ldlcarena.com,2026-12-13 15:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:groupama-stadium:202612131945,salle:groupama-stadium,OL / OLYMPIQUE DE MARSEILLE,match,olvallee.fr,2026-12-13 19:45:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:groupama-stadium:202612162000,salle:groupama-stadium,OL LYONNES / BK HÄCKEN,match_feminin,olvallee.fr,2026-12-16 20:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202612171900,salle:ldlc-arena,Superbus,spectacle,ldlcarena.com,2026-12-17 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:halle-tony-garnier:202612181900,salle:halle-tony-garnier,DISNEY EN CONCERT- SUIVEZ VOS REVES,concert,halle-tony-garnier.com,2026-12-18 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:matmut-stadium-gerland:202612191500,salle:matmut-stadium-gerland,LOU Rugby - Rc Toulon,match,lourugby.fr,2026-12-19 15:00:00+00:00,,heure_a_confirmer
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202612191600,salle:ldlc-arena,PFL Lyon 2026,spectacle,ldlcarena.com,2026-12-19 16:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202612221900,salle:ldlc-arena,LDLC ASVEL / FC Barcelone,match,ldlcarena.com,2026-12-22 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202612271500,salle:ldlc-arena,K-Pop Forever !,spectacle,ldlcarena.com,2026-12-27 15:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202612301900,salle:ldlc-arena,LDLC ASVEL / Olympiacos,match,ldlcarena.com,2026-12-30 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:matmut-stadium-gerland:202701021500,salle:matmut-stadium-gerland,LOU Rugby - Racing 92,match,lourugby.fr,2027-01-02 15:00:00+00:00,,heure_a_confirmer
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202701081700,salle:ldlc-arena,Lidl Tournoi de France,spectacle,ldlcarena.com,2027-01-08 17:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:halle-tony-garnier:202701081900,salle:halle-tony-garnier,GOLDMEN - CONCERT 100 % GOLDMAN,concert,halle-tony-garnier.com,2027-01-08 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:halle-tony-garnier:202701091900,salle:halle-tony-garnier,HARRY POTTER ET LE PRINCE DE SANG-MÉLÉ,concert,halle-tony-garnier.com,2027-01-09 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202701101300,salle:ldlc-arena,Lidl Tournoi de France,spectacle,ldlcarena.com,2027-01-10 13:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202701121900,salle:ldlc-arena,LDLC ASVEL / Zalgiris Kaunas,match,ldlcarena.com,2027-01-12 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:halle-tony-garnier:202701131900,salle:halle-tony-garnier,ONE NIGHT OF QUEEN,concert,halle-tony-garnier.com,2027-01-13 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202701141900,salle:ldlc-arena,Claudio Capéo,spectacle,ldlcarena.com,2027-01-14 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:halle-tony-garnier:202701141900,salle:halle-tony-garnier,LES CHEVALIERS DU FIEL,spectacle,halle-tony-garnier.com,2027-01-14 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202701151900,salle:ldlc-arena,Florent Pagny,spectacle,ldlcarena.com,2027-01-15 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:halle-tony-garnier:202701161400,salle:halle-tony-garnier,"LION, LE ROI EST DE RETOUR",spectacle,halle-tony-garnier.com,2027-01-16 14:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202701161830,salle:ldlc-arena,MUSE,spectacle,ldlcarena.com,2027-01-16 18:30:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:halle-tony-garnier:202701161930,salle:halle-tony-garnier,OLIVIER DE BENOIST,spectacle,halle-tony-garnier.com,2027-01-16 19:30:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:matmut-stadium-gerland:202701171500,salle:matmut-stadium-gerland,LOU Rugby - Newcastle Red Bulls,match,lourugby.fr,2027-01-17 15:00:00+00:00,,heure_a_confirmer
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202701171830,salle:ldlc-arena,MUSE,spectacle,ldlcarena.com,2027-01-17 18:30:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:groupama-stadium:202701171945,salle:groupama-stadium,OL / FC LORIENT,match,olvallee.fr,2027-01-17 19:45:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:halle-tony-garnier:202701191900,salle:halle-tony-garnier,CLEMENT VIKTOROVITCH,spectacle,halle-tony-garnier.com,2027-01-19 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202701201900,salle:ldlc-arena,Cirque du soleil – Ovo,spectacle,ldlcarena.com,2027-01-20 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202701211900,salle:ldlc-arena,Cirque du soleil – Ovo,spectacle,ldlcarena.com,2027-01-21 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202701221800,salle:ldlc-arena,Cirque du soleil – Ovo,spectacle,ldlcarena.com,2027-01-22 18:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202701231400,salle:ldlc-arena,Cirque du soleil – Ovo,spectacle,ldlcarena.com,2027-01-23 14:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202701231800,salle:ldlc-arena,Cirque du soleil – Ovo,spectacle,ldlcarena.com,2027-01-23 18:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202701241000,salle:ldlc-arena,Cirque du soleil – Ovo,spectacle,ldlcarena.com,2027-01-24 10:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202701241400,salle:ldlc-arena,Cirque du soleil – Ovo,spectacle,ldlcarena.com,2027-01-24 14:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:halle-tony-garnier:202701271300,salle:halle-tony-garnier,DISNEY SUR GLACE - LE VOYAGE ENCHANTE,spectacle,halle-tony-garnier.com,2027-01-27 13:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:halle-tony-garnier:202701271630,salle:halle-tony-garnier,DISNEY SUR GLACE - LE VOYAGE ENCHANTE,spectacle,halle-tony-garnier.com,2027-01-27 16:30:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:groupama-stadium:202701282000,salle:groupama-stadium,OL / BAYER LEVERKUSEN,match,olvallee.fr,2027-01-28 20:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:halle-tony-garnier:202701291830,salle:halle-tony-garnier,DISNEY SUR GLACE - LE VOYAGE ENCHANTE,spectacle,halle-tony-garnier.com,2027-01-29 18:30:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202701291930,salle:ldlc-arena,LE CADRE NOIR,spectacle,ldlcarena.com,2027-01-29 19:30:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:halle-tony-garnier:202701300915,salle:halle-tony-garnier,DISNEY SUR GLACE - LE VOYAGE ENCHANTE,spectacle,halle-tony-garnier.com,2027-01-30 09:15:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:halle-tony-garnier:202701301300,salle:halle-tony-garnier,DISNEY SUR GLACE - LE VOYAGE ENCHANTE,spectacle,halle-tony-garnier.com,2027-01-30 13:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:matmut-stadium-gerland:202701301500,salle:matmut-stadium-gerland,LOU Rugby - Bayonne,match,lourugby.fr,2027-01-30 15:00:00+00:00,,heure_a_confirmer
+2026-10-20 16:02:32.849891+00:00,salles,salle:halle-tony-garnier:202701301630,salle:halle-tony-garnier,DISNEY SUR GLACE - LE VOYAGE ENCHANTE,spectacle,halle-tony-garnier.com,2027-01-30 16:30:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202701301930,salle:ldlc-arena,LE CADRE NOIR,spectacle,ldlcarena.com,2027-01-30 19:30:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:halle-tony-garnier:202701310915,salle:halle-tony-garnier,DISNEY SUR GLACE - LE VOYAGE ENCHANTE,spectacle,halle-tony-garnier.com,2027-01-31 09:15:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:halle-tony-garnier:202701311300,salle:halle-tony-garnier,DISNEY SUR GLACE - LE VOYAGE ENCHANTE,spectacle,halle-tony-garnier.com,2027-01-31 13:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202701311430,salle:ldlc-arena,LE CADRE NOIR,spectacle,ldlcarena.com,2027-01-31 14:30:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202702021900,salle:ldlc-arena,Feu! Chatterton,spectacle,ldlcarena.com,2027-02-02 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:halle-tony-garnier:202702021900,salle:halle-tony-garnier,FOREVER - TRIBUTE MICHAEL JACKSON,concert,halle-tony-garnier.com,2027-02-02 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202702031900,salle:ldlc-arena,Ninho,spectacle,ldlcarena.com,2027-02-03 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202702041900,salle:ldlc-arena,Ninho,spectacle,ldlcarena.com,2027-02-04 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202702051900,salle:ldlc-arena,HOSHI,spectacle,ldlcarena.com,2027-02-05 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:halle-tony-garnier:202702061400,salle:halle-tony-garnier,ALDEBERT,concert,halle-tony-garnier.com,2027-02-06 14:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202702061900,salle:ldlc-arena,Les étoiles du cirque de pékin – odyssée,spectacle,ldlcarena.com,2027-02-06 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:halle-tony-garnier:202702071700,salle:halle-tony-garnier,SQUARE ENIX,concert,halle-tony-garnier.com,2027-02-07 17:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202702101900,salle:ldlc-arena,LDLC ASVEL / EFES istanbul,match,ldlcarena.com,2027-02-10 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:halle-tony-garnier:202702101900,salle:halle-tony-garnier,NAWELL MADANI,spectacle,halle-tony-garnier.com,2027-02-10 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202702111900,salle:ldlc-arena,Christophe Maé,spectacle,ldlcarena.com,2027-02-11 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202702121900,salle:ldlc-arena,La Fève,spectacle,ldlcarena.com,2027-02-12 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202702131900,salle:ldlc-arena,Magic system,spectacle,ldlcarena.com,2027-02-13 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:halle-tony-garnier:202702132030,salle:halle-tony-garnier,TELETECH,concert,halle-tony-garnier.com,2027-02-13 20:30:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:halle-tony-garnier:202702191830,salle:halle-tony-garnier,HOLIDAY ON ICE - CINEMA OF DREAMS,spectacle,halle-tony-garnier.com,2027-02-19 18:30:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:halle-tony-garnier:202702201300,salle:halle-tony-garnier,HOLIDAY ON ICE - CINEMA OF DREAMS,spectacle,halle-tony-garnier.com,2027-02-20 13:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:halle-tony-garnier:202702201630,salle:halle-tony-garnier,HOLIDAY ON ICE - CINEMA OF DREAMS,spectacle,halle-tony-garnier.com,2027-02-20 16:30:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202702201900,salle:ldlc-arena,André Rieu,spectacle,ldlcarena.com,2027-02-20 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:halle-tony-garnier:202702211200,salle:halle-tony-garnier,HOLIDAY ON ICE - CINEMA OF DREAMS,spectacle,halle-tony-garnier.com,2027-02-21 12:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:halle-tony-garnier:202702211530,salle:halle-tony-garnier,HOLIDAY ON ICE - CINEMA OF DREAMS,spectacle,halle-tony-garnier.com,2027-02-21 15:30:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:matmut-stadium-gerland:202702271500,salle:matmut-stadium-gerland,LOU Rugby - Montpellier Herault Rugby,match,lourugby.fr,2027-02-27 15:00:00+00:00,,heure_a_confirmer
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202702281900,salle:ldlc-arena,KYO,spectacle,ldlcarena.com,2027-02-28 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202703051900,salle:ldlc-arena,The Australian Pink floyd show,spectacle,ldlcarena.com,2027-03-05 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:halle-tony-garnier:202703051900,salle:halle-tony-garnier,MARINE,concert,halle-tony-garnier.com,2027-03-05 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:halle-tony-garnier:202703061900,salle:halle-tony-garnier,LES ANNEES 80,concert,halle-tony-garnier.com,2027-03-06 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202703071900,salle:ldlc-arena,clair obscur: Expedition 33 « A Painted Symphony »,spectacle,ldlcarena.com,2027-03-07 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:halle-tony-garnier:202703171900,salle:halle-tony-garnier,BERNARD LAVILLIERS,concert,halle-tony-garnier.com,2027-03-17 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202703191900,salle:ldlc-arena,Grand Corps Malade,spectacle,ldlcarena.com,2027-03-19 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:halle-tony-garnier:202703191900,salle:halle-tony-garnier,MICHELE LAROQUE & KAD MERAD - L'AGE BETE,spectacle,halle-tony-garnier.com,2027-03-19 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202703201900,salle:ldlc-arena,Harlem Globetrotters,spectacle,ldlcarena.com,2027-03-20 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:halle-tony-garnier:202703201900,salle:halle-tony-garnier,500 VOIX POUR JOHNNY,concert,halle-tony-garnier.com,2027-03-20 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202703231900,salle:ldlc-arena,LDLC ASVEL / Panathinaikos Aktor Athens,match,ldlcarena.com,2027-03-23 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202703251900,salle:ldlc-arena,LDLC ASVEL / Paris Basketball,match,ldlcarena.com,2027-03-25 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:matmut-stadium-gerland:202703271500,salle:matmut-stadium-gerland,LOU Rugby - Castres Olympique,match,lourugby.fr,2027-03-27 15:00:00+00:00,,heure_a_confirmer
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202703301800,salle:ldlc-arena,Keblack,spectacle,ldlcarena.com,2027-03-30 18:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202703311830,salle:ldlc-arena,Fabrice éboué,spectacle,ldlcarena.com,2027-03-31 18:30:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202704021800,salle:ldlc-arena,L2B,spectacle,ldlcarena.com,2027-04-02 18:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:halle-tony-garnier:202704031800,salle:halle-tony-garnier,PATRICK FIORI,concert,halle-tony-garnier.com,2027-04-03 18:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:halle-tony-garnier:202704041600,salle:halle-tony-garnier,GLORIOUS,concert,halle-tony-garnier.com,2027-04-04 16:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:halle-tony-garnier:202704081700,salle:halle-tony-garnier,MEGADETH,concert,halle-tony-garnier.com,2027-04-08 17:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202704081800,salle:ldlc-arena,LDLC ASVEL / Real Madrid,match,ldlcarena.com,2027-04-08 18:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202704091745,salle:ldlc-arena,SIMPLE MINDS,spectacle,ldlcarena.com,2027-04-09 17:45:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:halle-tony-garnier:202704101800,salle:halle-tony-garnier,STAR WARS IN CONCERT : UN NOUVEL ESPOIR,concert,halle-tony-garnier.com,2027-04-10 18:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202704161800,salle:ldlc-arena,Vianney,spectacle,ldlcarena.com,2027-04-16 18:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:halle-tony-garnier:202704161800,salle:halle-tony-garnier,MOSIMANN,concert,halle-tony-garnier.com,2027-04-16 18:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:matmut-stadium-gerland:202704171400,salle:matmut-stadium-gerland,LOU Rugby - Usap,match,lourugby.fr,2027-04-17 14:00:00+00:00,,heure_a_confirmer
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202704171800,salle:ldlc-arena,Vianney,spectacle,ldlcarena.com,2027-04-17 18:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202704231800,salle:ldlc-arena,Tayc,spectacle,ldlcarena.com,2027-04-23 18:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202705021600,salle:ldlc-arena,star academy,spectacle,ldlcarena.com,2027-05-02 16:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:halle-tony-garnier:202705021600,salle:halle-tony-garnier,ROCKY IN CONCERT,concert,halle-tony-garnier.com,2027-05-02 16:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202705161800,salle:ldlc-arena,Hubert Félix Thiéfaine,spectacle,ldlcarena.com,2027-05-16 18:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:halle-tony-garnier:202705181800,salle:halle-tony-garnier,SUZANE,concert,halle-tony-garnier.com,2027-05-18 18:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202705221300,salle:ldlc-arena,Le Roi Soleil,spectacle,ldlcarena.com,2027-05-22 13:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:matmut-stadium-gerland:202705291400,salle:matmut-stadium-gerland,LOU Rugby - Union Bordeaux Begles,match,lourugby.fr,2027-05-29 14:00:00+00:00,,heure_a_confirmer
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202706041700,salle:ldlc-arena,Hexagone MMA Winamax,spectacle,ldlcarena.com,2027-06-04 17:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202706111800,salle:ldlc-arena,Jenifer,spectacle,ldlcarena.com,2027-06-11 18:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:groupama-stadium:202707101800,salle:groupama-stadium,Soprano,concert,jambase.com,2027-07-10 18:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:groupama-stadium:202707211800,salle:groupama-stadium,Karol G,concert,jambase.com,2027-07-21 18:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202709231800,salle:ldlc-arena,Zazie,spectacle,ldlcarena.com,2027-09-23 18:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202709241800,salle:ldlc-arena,Julien Clerc,spectacle,ldlcarena.com,2027-09-24 18:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:halle-tony-garnier:202709291800,salle:halle-tony-garnier,GENERATION CELINE,concert,halle-tony-garnier.com,2027-09-29 18:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:halle-tony-garnier:202710011800,salle:halle-tony-garnier,LA RUE KÉTANOU,concert,halle-tony-garnier.com,2027-10-01 18:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202711031900,salle:ldlc-arena,Angèle,spectacle,ldlcarena.com,2027-11-03 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202711041900,salle:ldlc-arena,Angèle,spectacle,ldlcarena.com,2027-11-04 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:halle-tony-garnier:202711041900,salle:halle-tony-garnier,JOK'AIR,concert,halle-tony-garnier.com,2027-11-04 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202711121900,salle:ldlc-arena,Laura Pausini,spectacle,ldlcarena.com,2027-11-12 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:halle-tony-garnier:202711181330,salle:halle-tony-garnier,SALUT LES COPAINS - LA TOURNEE,concert,halle-tony-garnier.com,2027-11-18 13:30:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202711181900,salle:ldlc-arena,Christophe Willem,spectacle,ldlcarena.com,2027-11-18 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:halle-tony-garnier:202711181900,salle:halle-tony-garnier,I GOTTA FEELING – SAISON 3,concert,halle-tony-garnier.com,2027-11-18 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202711201900,salle:ldlc-arena,Eddy de Pretto,spectacle,ldlcarena.com,2027-11-20 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:halle-tony-garnier:202711271900,salle:halle-tony-garnier,GAEL FAYE,concert,halle-tony-garnier.com,2027-11-27 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:halle-tony-garnier:202712101900,salle:halle-tony-garnier,PHILIPPE CAVERIVIERE,spectacle,halle-tony-garnier.com,2027-12-10 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202712171900,salle:ldlc-arena,alex vizorek,spectacle,ldlcarena.com,2027-12-17 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:halle-tony-garnier:202712181900,salle:halle-tony-garnier,DISNEY EN CINE CONCERT,concert,halle-tony-garnier.com,2027-12-18 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:halle-tony-garnier:202801141900,salle:halle-tony-garnier,FESTIVAL MONDIAL DE LA MAGIE,spectacle,halle-tony-garnier.com,2028-01-14 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202802051400,salle:ldlc-arena,"Mousquetaire, une création du Puy du Fou",spectacle,ldlcarena.com,2028-02-05 14:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202802051900,salle:ldlc-arena,"Mousquetaire, une création du Puy du Fou",spectacle,ldlcarena.com,2028-02-05 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202802061400,salle:ldlc-arena,"Mousquetaire, une création du Puy du Fou",spectacle,ldlcarena.com,2028-02-06 14:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202802251900,salle:ldlc-arena,Johnny Symphonique Tour,spectacle,ldlcarena.com,2028-02-25 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:halle-tony-garnier:202803011900,salle:halle-tony-garnier,ERA,concert,halle-tony-garnier.com,2028-03-01 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202803111900,salle:ldlc-arena,DALIDA IN PARADISCO,spectacle,ldlcarena.com,2028-03-11 19:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202803121400,salle:ldlc-arena,DALIDA IN PARADISCO,spectacle,ldlcarena.com,2028-03-12 14:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202803241930,salle:ldlc-arena,Roméo & Juliette,spectacle,ldlcarena.com,2028-03-24 19:30:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202803251400,salle:ldlc-arena,Roméo & Juliette,spectacle,ldlcarena.com,2028-03-25 14:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202803251930,salle:ldlc-arena,Roméo & Juliette,spectacle,ldlcarena.com,2028-03-25 19:30:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202803261300,salle:ldlc-arena,Roméo & Juliette,spectacle,ldlcarena.com,2028-03-26 13:00:00+00:00,,programme
+2026-10-20 16:02:32.849891+00:00,salles,salle:ldlc-arena:202804191800,salle:ldlc-arena,Adèle Castillon,spectacle,ldlcarena.com,2028-04-19 18:00:00+00:00,,programme

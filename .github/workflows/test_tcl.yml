@@ -1,0 +1,29 @@
+# =============================================================================
+# TEST D'ACCÈS AUX ALERTES TRAFIC TCL (lancé à la main)
+# =============================================================================
+# Liste les jeux de données TCL du Grand Lyon et affiche quelques alertes
+# (incidents, grèves, travaux) pour préparer leur collecte.
+# Lancement : onglet « Actions » → « Test alertes TCL » → « Run workflow ».
+# =============================================================================
+
+name: Test alertes TCL
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - run: uv sync
+      - name: Lister et lire les alertes TCL
+        env:
+          GRANDLYON_LOGIN: ${{ secrets.GRANDLYON_LOGIN }}
+          GRANDLYON_PASSWORD: ${{ secrets.GRANDLYON_PASSWORD }}
+        run: uv run python -m src.ingestion.test_tcl_access

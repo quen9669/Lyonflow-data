@@ -26,6 +26,12 @@ table. Toutes les tables partagent la colonne « ingestion_timestamp »
   (ces trois dernières uniquement si un compte data.grandlyon.com est configuré,
    voir fetch_grandlyon.py)
 
+RÉFÉRENTIELS (choix validé) :
+Le nom, la position GPS et l'altitude des stations (et le nom et la position
+des parkings et P+R) ne sont pas répétés dans chaque relevé : ils sont rangés
+une seule fois, avec leur période de validité, dans data/reference/
+(velov_stations.csv, parkings.csv, parcs_relais.csv). Voir referentiel.py.
+
 ORGANISATION DES FICHIERS :
 Chaque passage AJOUTE ses lignes à la fin des fichiers du jour, sans jamais
 modifier les lignes déjà écrites. Git n'enregistre donc que les nouvelles
@@ -44,6 +50,7 @@ import httpx
 
 from src.ingestion.fetch_elevation import FICHIER_ALTITUDES
 from src.ingestion.fetch_grandlyon import collecter_mobilite_grandlyon
+from src.ingestion.referentiel import mettre_a_jour_fichier
 from src.ingestion.fetch_velov import collecter_etat_stations
 from src.ingestion.fetch_weather import collecter_meteo_actuelle
 
@@ -56,19 +63,34 @@ DOSSIER_BRONZE_FLUX = Path("data/bronze/feed")
 SOURCES_GRANDLYON = {
     "parcs_relais": (
         Path("data/bronze/park_and_ride"),
-        ["ingestion_timestamp", "parc_id", "parc_name", "lat", "lon", "capacity",
-         "available_places_raw", "last_update_api"],
+        ["ingestion_timestamp", "parc_id", "capacity", "available_places_raw", "last_update_api"],
     ),
     "parkings": (
         Path("data/bronze/parking"),
-        ["ingestion_timestamp", "parking_id", "parking_name", "lat", "lon", "capacity",
-         "available_places_raw", "status_raw", "last_update_api"],
+        ["ingestion_timestamp", "parking_id", "capacity", "available_places_raw", "status_raw",
+         "last_update_api"],
     ),
     "trafic": (
         Path("data/bronze/traffic"),
         ["ingestion_timestamp", "traffic_status_raw", "nb_segments", "total_length_m"],
     ),
 }
+
+# Référentiels historisés : pour chaque source, (fichier, identifiant, informations suivies)
+REFERENTIELS = {
+    "velov": (Path("data/reference/velov_stations.csv"), "station_id",
+              ["station_name", "lat", "lon", "altitude_m"]),
+    "parcs_relais": (Path("data/reference/parcs_relais.csv"), "parc_id", ["parc_name", "lat", "lon"]),
+    "parkings": (Path("data/reference/parkings.csv"), "parking_id", ["parking_name", "lat", "lon"]),
+}
+
+
+def mettre_a_jour_referentiel(source: str, elements: list[dict], heure_releve) -> None:
+    """Enregistrer dans le référentiel les éléments nouveaux ou modifiés de ce relevé."""
+    fichier, cle, attributs = REFERENTIELS[source]
+    nb_changements = mettre_a_jour_fichier(fichier, cle, attributs, elements, str(heure_releve))
+    if nb_changements:
+        print(f"📒 Référentiel {fichier.name} : {nb_changements} ligne(s) ajoutée(s) ou mise(s) à jour")
 
 # Ordre fixe des colonnes dans les fichiers CSV.
 # Le fixer explicitement garantit que tous les fichiers ont la même structure,
@@ -77,10 +99,6 @@ COLONNES_VELOV = [
     # Quand (clé commune avec la météo) et quelle station
     "ingestion_timestamp",
     "station_id",
-    "station_name",
-    "lat",
-    "lon",
-    "altitude_m",
     "total_stands",
     # État brut envoyé par la station
     "available_bikes_raw",
@@ -176,7 +194,9 @@ def collecter_et_sauvegarder() -> Path:
     heure_releve = stations[0]["ingestion_timestamp"]
     jour = heure_releve.date().isoformat()
 
-    # Étape 4 : On enregistre les stations, la ligne « flux », puis la météo (si disponible)
+    # Étape 4 : On met à jour le référentiel des stations (nom, position, altitude),
+    # puis on enregistre les relevés, la ligne « flux » et la météo (si disponible)
+    mettre_a_jour_referentiel("velov", stations, heure_releve)
     fichier_velov = ajouter_au_fichier_du_jour(DOSSIER_BRONZE_VELOV, jour, COLONNES_VELOV, stations)
     print(f"✅ {len(stations)} stations ajoutées à {fichier_velov}")
 
@@ -198,6 +218,8 @@ def collecter_et_sauvegarder() -> Path:
         dossier, colonnes = SOURCES_GRANDLYON[source]
         for ligne in lignes:
             ligne["ingestion_timestamp"] = heure_releve
+        if source in REFERENTIELS:
+            mettre_a_jour_referentiel(source, lignes, heure_releve)
         if lignes:
             fichier = ajouter_au_fichier_du_jour(dossier, jour, colonnes, lignes)
             print(f"✅ {len(lignes)} lignes « {source} » ajoutées à {fichier}")

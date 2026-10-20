@@ -15,11 +15,16 @@ par GitHub Actions.
 | `data/bronze/parking/` | Un fichier CSV par jour : places libres de chaque parking de la Métropole à chaque relevé |
 | `data/bronze/traffic/` | Un fichier CSV par jour : résumé de l'état du trafic routier à chaque relevé |
 | `data/reference/stations_altitude.csv` | Altitude de chaque station (Open-Meteo) |
+| `data/reference/velov_stations.csv` | Référentiel des stations Vélo'v : nom, latitude, longitude, altitude |
+| `data/reference/parcs_relais.csv` | Référentiel des parcs relais : nom, latitude, longitude |
+| `data/reference/parkings.csv` | Référentiel des parkings : nom, latitude, longitude |
 | `data/reference/school_holidays.csv` | Vacances scolaires de l'académie de Lyon (Éducation nationale), mises à jour à chaque démarrage du robot |
 | `src/ingestion/` | Scripts de collecte |
 | `.github/workflows/collect_15min.yml` | Le robot de collecte |
 
 Toutes les tables se relient par la colonne `ingestion_timestamp`.
+
+Les relevés ne contiennent que l'identifiant de chaque station ou parking. Le nom et la position sont rangés une seule fois dans les référentiels, avec une période de validité : `valid_from` (apparition de cette version) et `valid_to` (2099-12-31 tant que rien n'a changé). Si un nom ou une position change, l'ancienne version est fermée et une nouvelle est ouverte : le passé n'est jamais réécrit.
 
 ## Lancer une collecte à la main
 

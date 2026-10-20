@@ -1,0 +1,31 @@
+# =============================================================================
+# TEST D'ACCÈS AUX DONNÉES DU GRAND LYON (lancé à la main)
+# =============================================================================
+# Vérifie, en quelques secondes, que le compte data.grandlyon.com (secrets
+# GRANDLYON_LOGIN / GRANDLYON_PASSWORD) donne bien accès aux P+R, aux parkings
+# et au trafic. Pour chaque jeu, affiche le code de réponse du serveur :
+#   200 = accès accordé ; 401 = identifiants refusés ; 403 = accès au jeu non accordé.
+# Lancement : onglet « Actions » → « Test d'accès Grand Lyon » → « Run workflow ».
+# =============================================================================
+
+name: Test d'accès Grand Lyon
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - run: uv sync
+      - name: Tester chaque jeu de données
+        env:
+          GRANDLYON_LOGIN: ${{ secrets.GRANDLYON_LOGIN }}
+          GRANDLYON_PASSWORD: ${{ secrets.GRANDLYON_PASSWORD }}
+        run: uv run python -m src.ingestion.test_grandlyon_access

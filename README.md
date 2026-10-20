@@ -15,7 +15,7 @@ par GitHub Actions.
 | `data/bronze/parking/` | Un fichier CSV par jour : places libres de chaque parking de la Métropole à chaque relevé |
 | `data/bronze/traffic/` | Un fichier CSV par jour : résumé de l'état du trafic routier à chaque relevé |
 | `data/bronze/events/` | Un fichier CSV par jour : événements des 14 prochains jours autour de Lyon (OpenAgenda : Ville de Lyon, Shotgun, Villeurbanne…), relevés à chaque démarrage du robot |
-| `data/bronze/events_salles/` | Un fichier CSV par semaine : programme des grandes salles (LDLC Arena, Groupama Stadium, Halle Tony Garnier, Matmut Stadium de Gerland), mêmes colonnes que `events/`, relevé chaque lundi |
+| `data/bronze/events_salles/` | Un fichier CSV par semaine : programme des grandes salles (LDLC Arena et Halle Tony Garnier : sites officiels ; Groupama Stadium : matchs de l'OL et de l'OL Lyonnes, concerts ; Matmut Stadium de Gerland : LOU Rugby), mêmes colonnes que `events/`, relevé chaque lundi |
 | `data/bronze/air_quality/` | Un fichier CSV par jour : vigilance pollution du bassin lyonnais et dépassements de seuil (Atmo Auvergne-Rhône-Alpes, flux ouverts) |
 | `data/reference/lieux_evenements.csv` | Référentiel des salles et stades : nom, latitude, longitude |
 | `data/reference/stations_altitude.csv` | Altitude de chaque station (Open-Meteo) |

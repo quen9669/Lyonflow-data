@@ -17,8 +17,13 @@ SOURCES (vérifiées depuis le robot le 20/10/2026) :
     on y prend les matchs de l'OL et de l'OL Lyonnes (liens vers la billetterie
     de l'OL ; catégorie « match_feminin » pour l'OL Lyonnes, au public plus
     réduit). Les événements de la LDLC Arena viennent déjà de son site.
-  - JamBase, agenda de concerts : la Halle Tony Garnier (son site ne publie pas
-    de dates lisibles) et les concerts au Groupama Stadium.
+  - Halle Tony Garnier, site officiel : la page « programmation » (titre, date,
+    heure et type de chaque date : concert, humour, salon, soirée…).
+  - fixturedownload.com, calendrier public des championnats : matchs de l'OL à
+    domicile (Ligue 1, coupes d'Europe) avec l'heure exacte. Tant que la Ligue
+    n'a pas fixé l'heure, le match est placé à minuit : on l'ignore jusqu'à ce
+    qu'elle soit connue (OL Vallée ou le calendrier manuel peuvent le couvrir).
+  - JamBase, agenda de concerts : les concerts au Groupama Stadium.
   - LOU Rugby, site officiel : les prochains matchs à Gerland (Matmut Stadium).
 Le site de l'ASVEL et Infoconcert refusent les robots (code 403) : non utilisés.
 
@@ -67,6 +72,10 @@ SALLES = {
 URL_LDLC_ARENA = "https://www.ldlcarena.com/calendrier/page/{page}/"
 URL_OL_VALLEE = "https://www.olvallee.fr/calendrier/"
 URL_JAMBASE = "https://www.jambase.com/venue/{salle}"
+URL_HTG = "https://www.halle-tony-garnier.com/fr/programmation"
+URL_MATCHS = "https://fixturedownload.com/feed/json/{competition}-{saison}"
+COMPETITIONS_OL = {"ligue-1": "Ligue 1", "champions-league": "Ligue des champions",
+                   "europa-league": "Ligue Europa", "conference-league": "Ligue Conférence"}
 URL_LOU = "https://www.lourugby.fr/"
 PAGES_MAX = 10
 
@@ -138,6 +147,9 @@ def lire_ldlc_arena(page_html: str) -> list[dict]:
     for e in evenements_json_ld(page_html):
         if not e.get("startDate"):
             continue
+        # Une date annulée ou reportée ne fait venir personne
+        if any(mot in str(e.get("eventStatus", "")) for mot in ("Cancelled", "Postponed", "MovedOnline")):
+            continue
         nom = nettoyer(str(e.get("name", "")))
         # Concerts, humour, spectacles, sport hors basket : « spectacle »
         categorie = "match" if "ASVEL" in nom.upper() else "spectacle"
@@ -176,6 +188,55 @@ def lire_jambase(page_html: str, salle: str) -> list[dict]:
             continue  # date sans heure : on ne saurait pas quand placer l'effet
         nom = nettoyer(str(e.get("name", ""))).split(" - ")[0]
         lignes.append(ligne(salle, nom, "concert", heure_de_lyon_en_utc(e["startDate"]), "jambase.com"))
+    return lignes
+
+
+# Un bloc de la page « programmation » de la Halle Tony Garnier :
+# lien, type (concert, humour…), titre, date « JJ.MM.AA » et heure « 20h00 » (parfois absente)
+BLOC_HTG = re.compile(
+    r'<a href="(?P<url>[^"]+/programmation/(?P<slug>[^"]+))" class="bloc-square types type_(?P<type>[\w-]+)">'
+    r'.*?bloc-square__title">(?P<titre>.*?)</div>'
+    r'.*?bloc-square__date">\s*(?P<date>\d{2}\.\d{2}\.\d{2})\s*</div>'
+    r'(?:\s*<div class="bloc-square__heure">\s*(?P<heure>\d{1,2}h\d{2})?\s*</div>)?',
+    re.S,
+)
+TYPES_HTG = {"concert": "concert", "cine-concert": "concert", "humour": "spectacle",
+             "spectacle": "spectacle", "salon": "salon", "soiree": "soiree", "sport": "sport"}
+
+
+def lire_halle_tony_garnier(page_html: str) -> list[dict]:
+    """Dates de la page « programmation » de la Halle Tony Garnier (sans heure : 20h, à confirmer)."""
+    lignes = []
+    for bloc in BLOC_HTG.finditer(page_html):
+        jour = datetime.strptime(bloc["date"], "%d.%m.%y")
+        if bloc["heure"]:
+            heure, minute = (int(x) for x in bloc["heure"].split("h"))
+            statut = "programme"
+        else:
+            heure, minute, statut = 20, 0, "heure_a_confirmer"
+        debut = jour.replace(hour=heure, minute=minute, tzinfo=HEURE_LYON)
+        lignes.append(ligne("halle-tony-garnier", nettoyer(bloc["titre"]), TYPES_HTG.get(bloc["type"], "autre"),
+                            debut.astimezone(timezone.utc), "halle-tony-garnier.com", statut))
+    return lignes
+
+
+def saisons_de_football(maintenant: datetime) -> list[int]:
+    """Saison(s) en cours : « 2026 » = saison 2026-2027 (d'août à mai) ; en juin, les deux."""
+    annee = maintenant.year if maintenant.month >= 7 else maintenant.year - 1
+    return [annee, annee + 1] if maintenant.month == 6 else [annee]
+
+
+def lire_matchs_ol(matchs: list[dict], competition: str) -> list[dict]:
+    """Matchs de l'OL à domicile dont l'heure est fixée (heures données en UTC par la source)."""
+    lignes = []
+    for match in matchs:
+        if "Lyon" not in (match.get("HomeTeam") or ""):
+            continue
+        debut = datetime.strptime(match["DateUtc"], "%Y-%m-%d %H:%M:%SZ").replace(tzinfo=timezone.utc)
+        if debut.astimezone(HEURE_LYON).strftime("%H:%M") == "00:00":
+            continue  # heure pas encore fixée par la Ligue
+        lignes.append(ligne("groupama-stadium", f"OL - {match['AwayTeam']} ({competition})", "match",
+                            debut, "fixturedownload.com"))
     return lignes
 
 
@@ -236,6 +297,28 @@ def collecter_salles(maintenant: datetime) -> tuple[list[dict], dict[str, str]]:
             reponse.raise_for_status()
             return lire_ol_vallee(reponse.text)
 
+        def halle_tony_garnier():
+            reponse = client.get(URL_HTG)
+            reponse.raise_for_status()
+            trouvees = lire_halle_tony_garnier(reponse.text)
+            if not trouvees:
+                raise ValueError("aucune date lue : la page a peut-être changé de présentation")
+            return trouvees
+
+        def matchs_ol():
+            trouvees, lues = [], 0
+            for saison in saisons_de_football(maintenant):
+                for code, competition in COMPETITIONS_OL.items():
+                    reponse = client.get(URL_MATCHS.format(competition=code, saison=saison))
+                    if reponse.status_code == 404:
+                        continue  # l'OL ne joue pas cette coupe, ou calendrier pas encore publié
+                    reponse.raise_for_status()
+                    lues += 1
+                    trouvees += lire_matchs_ol(reponse.json(), competition)
+            if not lues:
+                raise ValueError("aucun calendrier de championnat trouvé")
+            return trouvees
+
         def jambase(salle):
             reponse = client.get(URL_JAMBASE.format(salle=salle))
             reponse.raise_for_status()
@@ -252,9 +335,10 @@ def collecter_salles(maintenant: datetime) -> tuple[list[dict], dict[str, str]]:
             return matchs
 
         essayer("LDLC Arena (site officiel)", ldlc_arena)
-        essayer("OL Vallée (matchs de l'OL)", ol_vallee)
-        essayer("JamBase Halle Tony Garnier", lambda: jambase("halle-tony-garnier"))
-        essayer("JamBase Groupama Stadium", lambda: jambase("groupama-stadium"))
+        essayer("Halle Tony Garnier (site officiel)", halle_tony_garnier)
+        essayer("Matchs de l'OL (fixturedownload)", matchs_ol)
+        essayer("OL Vallée (OL et OL Lyonnes)", ol_vallee)
+        essayer("JamBase Groupama Stadium (concerts)", lambda: jambase("groupama-stadium"))
         essayer("LOU Rugby", lou)
 
     # Seulement l'avenir, et une seule fois chaque événement (même salle, même heure)

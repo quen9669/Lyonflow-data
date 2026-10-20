@@ -1,0 +1,65 @@
+# =============================================================================
+# COLLECTE AUTOMATIQUE VÉLO'V TOUTES LES 15 MINUTES (24h/24)
+# =============================================================================
+# GitHub lance ce « workflow » tout seul, même quand ton ordinateur est éteint.
+#
+# PRINCIPE DE LA « BOUCLE LONGUE » (choix validé au Sprint 2) :
+# GitHub ne respecte pas l'heure exacte des tâches programmées (la première nuit,
+# 20 à 54 minutes entre deux passages). Donc :
+#   - chaque passage reste allumé environ 5h30 et collecte lui-même pile
+#     à :00, :15, :30 et :45 (script src/ingestion/collect_loop.py) ;
+#   - GitHub est sollicité toutes les heures : si un passage tourne déjà,
+#     la demande attend en file et prend le relais dès qu'il se termine.
+# Résultat : des relevés réguliers, sans trou, et gratuits (dépôt public).
+# =============================================================================
+
+name: Collecte Vélo'v toutes les 15 min
+
+on:
+  schedule:
+    # Format « cron » : minute heure jour mois jour-de-semaine (heures en UTC).
+    # « 5 * * * * » = à 5 minutes de chaque heure. Ce n'est qu'un « réveil » :
+    # l'heure exacte des collectes est gérée par la boucle.
+    - cron: "5 * * * *"
+  # Permet aussi de lancer un passage à la main depuis l'onglet « Actions » de GitHub
+  workflow_dispatch:
+
+# Autorise le workflow à enregistrer (pousser) les nouveaux fichiers dans le dépôt
+permissions:
+  contents: write
+
+# Un seul passage à la fois. Les demandes suivantes attendent leur tour
+# (GitHub n'en garde qu'une en attente, ce qui suffit pour le relais).
+concurrency:
+  group: collecte-velov
+  cancel-in-progress: false
+
+jobs:
+  collecte:
+    runs-on: ubuntu-latest
+    # Filet de sécurité : GitHub coupe à 6h, la boucle s'arrête d'elle-même à 5h30
+    timeout-minutes: 350
+
+    steps:
+      - name: Récupérer le code du dépôt
+        uses: actions/checkout@v4
+
+      - name: Installer uv (et Python)
+        uses: astral-sh/setup-uv@v6
+
+      - name: Installer les librairies du projet
+        run: uv sync
+
+      # L'altitude ne change jamais : on ne la télécharge que si le fichier
+      # de référence n'existe pas encore. Si l'API d'altitude est en panne,
+      # on continue quand même (la colonne altitude restera vide).
+      - name: Récupérer l'altitude des stations (une seule fois)
+        if: hashFiles('data/reference/stations_altitude.csv') == ''
+        continue-on-error: true
+        run: uv run python -m src.ingestion.fetch_elevation
+
+      - name: Collecter pile toutes les 15 minutes pendant 5h30
+        run: |
+          git config user.name "lyonflow-collecte[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          uv run python -m src.ingestion.collect_loop

@@ -1,0 +1,25 @@
+# =============================================================================
+# FICHIERS À NE JAMAIS ENVOYER SUR GITHUB
+# =============================================================================
+
+# Environnement Python local créé par 'uv' (se recrée en une commande : uv sync)
+.venv/
+
+# Fichiers temporaires générés automatiquement par Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Secrets : mots de passe, clés d'API (ne doivent JAMAIS être publics)
+.env
+.env.*
+
+# Fichiers propres à l'éditeur de code ou au système
+.vscode/
+.idea/
+.DS_Store
+
+# Base DuckDB : elle se recrée en une commande à partir des fichiers CSV
+# (dans le projet d analyse). Seuls les CSV vont sur GitHub.
+*.duckdb
+*.duckdb.wal

@@ -1,0 +1,16 @@
+# =============================================================================
+# FICHIER DE CONFIGURATION DE LA COLLECTE (géré par l'outil 'uv')
+# =============================================================================
+# Ce dépôt ne fait qu'une chose : relever l'état des stations Vélo'v et la
+# météo tous les quarts d'heure. Une seule librairie externe : httpx (appels web).
+# =============================================================================
+
+[project]
+name = "lyonflow-data"
+version = "0.1.0"
+description = "Relevés Vélo'v Lyon (GBFS) et météo, collectés tous les quarts d'heure."
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "httpx>=0.28.1",
+]

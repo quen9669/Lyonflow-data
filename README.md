@@ -14,6 +14,9 @@ par GitHub Actions.
 | `data/bronze/park_and_ride/` | Un fichier CSV par jour : places libres de chaque parc relais TCL à chaque relevé |
 | `data/bronze/parking/` | Un fichier CSV par jour : places libres de chaque parking de la Métropole à chaque relevé |
 | `data/bronze/traffic/` | Un fichier CSV par jour : résumé de l'état du trafic routier à chaque relevé |
+| `data/bronze/events/` | Un fichier CSV par jour : événements des 14 prochains jours autour de Lyon (Ticketmaster), relevés à chaque démarrage du robot |
+| `data/bronze/air_quality/` | Un fichier CSV par jour : indice de qualité de l'air de Lyon et épisodes de pollution (Atmo Data) |
+| `data/reference/lieux_evenements.csv` | Référentiel des salles et stades : nom, latitude, longitude |
 | `data/reference/stations_altitude.csv` | Altitude de chaque station (Open-Meteo) |
 | `data/reference/velov_stations.csv` | Référentiel des stations Vélo'v : nom, latitude, longitude, altitude |
 | `data/reference/parcs_relais.csv` | Référentiel des parcs relais : nom, latitude, longitude |

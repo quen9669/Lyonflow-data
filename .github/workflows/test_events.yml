@@ -1,0 +1,31 @@
+# =============================================================================
+# TEST D'ACCÈS AUX ÉVÉNEMENTS ET À LA POLLUTION (lancé à la main)
+# =============================================================================
+# Vérifie que les clés Ticketmaster, OpenAgenda et Atmo Data (secrets du dépôt)
+# sont acceptées, et affiche un aperçu des données (jamais les clés).
+# Lancement : onglet « Actions » → « Test d'accès événements et pollution » → « Run workflow ».
+# =============================================================================
+
+name: Test d'accès événements et pollution
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - run: uv sync
+      - name: Tester chaque source
+        env:
+          TICKETMASTER_API_KEY: ${{ secrets.TICKETMASTER_API_KEY }}
+          OPENAGENDA_API_KEY: ${{ secrets.OPENAGENDA_API_KEY }}
+          ATMO_LOGIN: ${{ secrets.ATMO_LOGIN }}
+          ATMO_PASSWORD: ${{ secrets.ATMO_PASSWORD }}
+        run: uv run python -m src.ingestion.test_events_access

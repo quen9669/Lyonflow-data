@@ -23,11 +23,21 @@ par GitHub Actions.
 | `data/reference/parkings.csv` | Référentiel des parkings : nom, latitude, longitude |
 | `data/reference/school_holidays.csv` | Vacances scolaires de l'académie de Lyon (Éducation nationale), mises à jour à chaque démarrage du robot |
 | `src/ingestion/` | Scripts de collecte |
-| `.github/workflows/collect_15min.yml` | Le robot de collecte |
+| `src/monitoring/` | Contrôle de santé des flux |
+| `.github/workflows/collect_15min.yml` | Le robot de collecte : chaque passage dure 5h30 puis relance le suivant |
+| `.github/workflows/health_check.yml` | Contrôle de santé, toutes les heures |
 
 Toutes les tables se relient par la colonne `ingestion_timestamp`.
 
 Les relevés ne contiennent que l'identifiant de chaque station ou parking. Le nom et la position sont rangés une seule fois dans les référentiels, avec une période de validité : `valid_from` (apparition de cette version) et `valid_to` (2099-12-31 tant que rien n'a changé). Si un nom ou une position change, l'ancienne version est fermée et une nouvelle est ouverte : le passé n'est jamais réécrit.
+
+## Surveillance
+
+Toutes les heures, le workflow « Santé des flux » vérifie que chaque source a été relevée récemment (30 minutes au plus pour les flux du quart d'heure, 7 heures pour les événements et la pollution) et complètement. En cas de problème, il s'affiche en rouge et GitHub envoie un e-mail. Le détail se lit dans le résumé du passage.
+
+```bash
+uv run python -m src.monitoring.check_health
+```
 
 ## Lancer une collecte à la main
 

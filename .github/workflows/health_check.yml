@@ -1,0 +1,34 @@
+# =============================================================================
+# CONTRÔLE DE SANTÉ DES FLUX (toutes les heures)
+# =============================================================================
+# Vérifie que chaque source (Vélo'v, météo, P+R, parkings, trafic, événements,
+# pollution) a bien été relevée récemment et complètement.
+# En cas de problème, ce passage s'affiche en rouge et GitHub envoie un e-mail.
+# Le tableau détaillé se lit dans le résumé du passage (onglet Actions).
+# Ce contrôle n'écrit rien dans le dépôt.
+# =============================================================================
+
+name: Santé des flux
+
+on:
+  schedule:
+    # À 35 minutes de chaque heure, loin des relevés de :30 et :45
+    - cron: "35 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  controle:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Récupérer les derniers relevés
+        uses: actions/checkout@v4
+
+      - name: Installer uv (et Python)
+        uses: astral-sh/setup-uv@v6
+
+      - name: Contrôler chaque flux
+        run: uv run python -m src.monitoring.check_health

@@ -7,7 +7,7 @@ GitHub ne lance pas les tâches programmées à l'heure exacte : la première nu
 les passages sont arrivés toutes les 20 à 54 minutes au lieu de 15.
 La solution retenue (« boucle longue ») : un seul passage GitHub Actions reste
 allumé plusieurs heures et déclenche lui-même la collecte pile à chaque
-quart d'heure. Quand il s'arrête, le passage suivant (déjà en file d'attente)
+quart d'heure. Quand il s'arrête, il relance lui-même le passage suivant, qui
 prend aussitôt le relais.
 
 DÉROULEMENT :

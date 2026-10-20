@@ -95,7 +95,25 @@ def tester_atmo() -> None:
                 print("  ", apercu(reponse.text, 300))
 
 
+def tester_atmo_aura_ouvert() -> None:
+    """Flux ouverts (sans compte) d'Atmo Auvergne-Rhône-Alpes : liste des couches disponibles."""
+    import re
+    print("\n=== Atmo Auvergne-Rhône-Alpes, flux ouverts (sans compte)")
+    for espace in ("ind_aura", "opendata", "episodes", ""):
+        url = f"https://sig.atmo-auvergnerhonealpes.fr/geoserver/{espace + '/' if espace else ''}wfs"
+        try:
+            reponse = httpx.get(url, params={"SERVICE": "WFS", "REQUEST": "GetCapabilities"}, timeout=60)
+        except httpx.HTTPError as erreur:
+            print(f"{url} : erreur {erreur}")
+            continue
+        couches = re.findall(r"<(?:wfs:)?Name>([^<]+)</(?:wfs:)?Name>", reponse.text)
+        print(f"{url} : {reponse.status_code}, {len(couches)} couches")
+        for couche in couches[:80]:
+            print("   ", couche)
+
+
 if __name__ == "__main__":
     tester_ticketmaster()
     tester_openagenda()
     tester_atmo()
+    tester_atmo_aura_ouvert()

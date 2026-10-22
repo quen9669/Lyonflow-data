@@ -13,7 +13,7 @@ L'API gratuite Open-Meteo (sans inscription ni clé d'accès), qui s'appuie
 notamment sur les modèles de Météo-France. Elle actualise ses valeurs
 « en direct » toutes les 15 minutes, ce qui correspond à notre rythme de collecte.
 
-MÉTÉO OBSERVÉE ET MÉTÉO PRÉVUE (décision n°31) :
+MÉTÉO OBSERVÉE ET MÉTÉO PRÉVUE (décision n°33) :
 - collecter_meteo_actuelle() : le temps qu'il fait au moment du relevé ;
 - collecter_meteo_prevue()   : le temps annoncé pour les prochaines heures,
   quart d'heure par quart d'heure.

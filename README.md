@@ -10,6 +10,7 @@ par GitHub Actions.
 |---|---|
 | `data/bronze/velov/` | Un fichier CSV par jour (UTC) : une ligne par station et par relevé (flux GBFS Vélo'v) |
 | `data/bronze/weather/` | Un fichier CSV par jour : la météo à chaque relevé (Open-Meteo, Lyon Bellecour) |
+| `data/bronze/weather_forecast/` | Un fichier CSV par jour : la météo prévue à chaque relevé pour les 6 prochaines heures, une ligne par quart d'heure à venir (Open-Meteo, Lyon Bellecour) |
 | `data/bronze/feed/` | Un fichier CSV par jour : date de génération du flux GBFS et nombre de stations |
 | `data/bronze/park_and_ride/` | Un fichier CSV par jour : places libres de chaque parc relais TCL à chaque relevé |
 | `data/bronze/parking/` | Un fichier CSV par jour : places libres de chaque parking de la Métropole à chaque relevé |

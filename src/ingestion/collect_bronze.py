@@ -7,9 +7,11 @@ C'est le script lancé pile à chaque quart d'heure (voir collect_loop.py).
 À chaque passage, il :
   1. photographie l'état de toutes les stations Vélo'v (fetch_velov.py),
   2. ajoute à chaque station son altitude (fichier de référence de fetch_elevation.py),
-  3. relève la météo du moment (fetch_weather.py),
-  4. ajoute les lignes Vélo'v au fichier du jour, et UNE ligne météo au fichier
-     météo du jour.
+  3. relève la météo du moment et la météo prévue pour les 6 prochaines heures
+     (fetch_weather.py),
+  4. ajoute les lignes Vélo'v au fichier du jour, UNE ligne météo au fichier
+     météo du jour et 24 lignes (une par quart d'heure à venir) au fichier des
+     prévisions du jour.
 
 TROIS TABLES RELIÉES PAR UNE CLÉ (choix validés au Sprint 2) :
 Certaines informations sont les mêmes pour toutes les stations d'un relevé
@@ -19,6 +21,8 @@ table. Toutes les tables partagent la colonne « ingestion_timestamp »
 (l'heure exacte du relevé) : c'est la clé qui permet de les relier.
   - data/bronze/velov/AAAA-MM-JJ.csv   → 466 lignes par relevé (une par station)
   - data/bronze/weather/AAAA-MM-JJ.csv → 1 ligne par relevé (météo)
+  - data/bronze/weather_forecast/AAAA-MM-JJ.csv → 24 lignes par relevé (météo prévue
+                                       pour chaque quart d'heure des 6 prochaines heures)
   - data/bronze/feed/AAAA-MM-JJ.csv    → 1 ligne par relevé (infos sur le flux Vélo'v)
   - data/bronze/park_and_ride/AAAA-MM-JJ.csv → 1 ligne par parc relais TCL et par relevé
   - data/bronze/parking/AAAA-MM-JJ.csv       → 1 ligne par parking et par relevé
@@ -57,11 +61,12 @@ from src.ingestion.fetch_tcl import DOSSIER_RESUME as DOSSIER_BRONZE_TCL
 from src.ingestion.fetch_tcl import collecter_alertes_tcl
 from src.ingestion.referentiel import mettre_a_jour_fichier
 from src.ingestion.fetch_velov import collecter_etat_stations
-from src.ingestion.fetch_weather import collecter_meteo_actuelle
+from src.ingestion.fetch_weather import collecter_meteo_actuelle, collecter_meteo_prevue
 
 # Dossiers où sont rangés les fichiers CSV quotidiens de la couche Bronze
 DOSSIER_BRONZE_VELOV = Path("data/bronze/velov")
 DOSSIER_BRONZE_METEO = Path("data/bronze/weather")
+DOSSIER_BRONZE_METEO_PREVUE = Path("data/bronze/weather_forecast")
 DOSSIER_BRONZE_FLUX = Path("data/bronze/feed")
 
 # Données de mobilité du Grand Lyon : pour chaque source, son dossier et ses colonnes
@@ -131,6 +136,16 @@ COLONNES_METEO = [
     "weather_precipitation_mm",
     "weather_rain_mm",
     "weather_wind_kmh",
+]
+
+COLONNES_METEO_PREVUE = [
+    # Quand la prévision a été relevée (clé commune) et pour quel quart d'heure elle vaut
+    "ingestion_timestamp",
+    "forecast_time_api",
+    "forecast_temp_c",
+    "forecast_precipitation_mm",
+    "forecast_rain_mm",
+    "forecast_wind_kmh",
 ]
 
 
@@ -216,6 +231,18 @@ def collecter_et_sauvegarder() -> Path:
         meteo["ingestion_timestamp"] = heure_releve
         fichier_meteo = ajouter_au_fichier_du_jour(DOSSIER_BRONZE_METEO, jour, COLONNES_METEO, [meteo])
         print(f"✅ Météo ajoutée à {fichier_meteo}")
+
+    # La météo prévue : une panne de ce flux ne bloque pas le relevé non plus
+    try:
+        prevues = collecter_meteo_prevue()
+    except (httpx.HTTPError, KeyError, ValueError) as erreur:
+        prevues = []
+        print(f"⚠️  Météo prévue indisponible pour ce relevé : {erreur}")
+    for ligne in prevues:
+        ligne["ingestion_timestamp"] = heure_releve
+    if prevues:
+        fichier = ajouter_au_fichier_du_jour(DOSSIER_BRONZE_METEO_PREVUE, jour, COLONNES_METEO_PREVUE, prevues)
+        print(f"✅ {len(prevues)} quarts d'heure de météo prévue ajoutés à {fichier}")
 
     # Étape 5 : Les données de mobilité du Grand Lyon (si un compte est configuré)
     mobilite = collecter_mobilite_grandlyon()

@@ -48,6 +48,9 @@ class Flux:
 FLUX = [
     Flux("Vélo'v", "velov", timedelta(minutes=30), 400, "vélos et places de chaque station"),
     Flux("Météo", "weather", timedelta(minutes=30), 1, "pluie, température, vent"),
+    # 24 quarts d'heure attendus ; une petite marge si l'API en renvoie quelques-uns de moins
+    Flux("Météo prévue", "weather_forecast", timedelta(minutes=30), 20,
+         "pluie, température, vent annoncés pour les 6 prochaines heures"),
     Flux("Flux GBFS", "feed", timedelta(minutes=30), 1, "fraîcheur des données Vélo'v"),
     Flux("Parcs relais TCL", "park_and_ride", timedelta(minutes=30), 10, "remplissage des P+R"),
     Flux("Parkings", "parking", timedelta(minutes=30), 30, "remplissage des parkings de la ville"),

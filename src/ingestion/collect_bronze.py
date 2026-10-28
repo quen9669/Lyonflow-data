@@ -50,6 +50,8 @@ Toutes les heures du projet sont en UTC pour éviter les pièges du passage
 """
 
 import csv
+import time
+from datetime import datetime, timezone
 from pathlib import Path
 
 import httpx
@@ -164,6 +166,32 @@ def lire_altitudes() -> dict:
         return {ligne["station_id"]: ligne["altitude_m"] for ligne in csv.DictReader(fichier)}
 
 
+# Vélo'v : si le serveur du Grand Lyon ne répond pas, on réessaie dans le même
+# quart d'heure (choix validé le 28/10/2026, après 11h de panne la nuit du 27 au 28/10).
+# Pauses en secondes : 2e essai 2 min après le 1er, 3e essai 3 min après le 2e.
+# Le dernier essai se termine donc vers +7 min, bien avant le quart d'heure suivant.
+PAUSES_ENTRE_ESSAIS_VELOV = [120, 180]
+
+
+def collecter_velov_avec_essais() -> list[dict]:
+    """
+    Récupérer l'état des stations Vélo'v, en réessayant si le serveur ne répond pas.
+    Une petite coupure de quelques minutes ne fait ainsi plus perdre le relevé.
+    Si tous les essais échouent, l'erreur du dernier essai est renvoyée.
+    """
+    nb_essais = len(PAUSES_ENTRE_ESSAIS_VELOV) + 1
+    for numero_essai in range(1, nb_essais + 1):
+        try:
+            return collecter_etat_stations()
+        except (httpx.HTTPError, ValueError) as erreur:
+            print(f"⚠️  Vélo'v ne répond pas (essai {numero_essai}/{nb_essais}) : {erreur}")
+            if numero_essai == nb_essais:
+                raise
+            pause = PAUSES_ENTRE_ESSAIS_VELOV[numero_essai - 1]
+            print(f"   Nouvel essai dans {pause // 60} min.")
+            time.sleep(pause)
+
+
 def lire_meteo_sans_bloquer() -> dict | None:
     """
     Récupérer la météo du moment.
@@ -194,16 +222,46 @@ def ajouter_au_fichier_du_jour(dossier: Path, jour: str, colonnes: list[str], li
     return fichier_du_jour
 
 
+def enregistrer_meteo(heure_releve, jour: str) -> None:
+    """
+    Relever et enregistrer la météo du moment et la météo prévue.
+    Une panne de l'une ou l'autre ne bloque rien : on note simplement un avertissement.
+    """
+    meteo = lire_meteo_sans_bloquer()
+    if meteo is not None:
+        meteo["ingestion_timestamp"] = heure_releve
+        fichier_meteo = ajouter_au_fichier_du_jour(DOSSIER_BRONZE_METEO, jour, COLONNES_METEO, [meteo])
+        print(f"✅ Météo ajoutée à {fichier_meteo}")
+
+    try:
+        prevues = collecter_meteo_prevue()
+    except (httpx.HTTPError, KeyError, ValueError) as erreur:
+        prevues = []
+        print(f"⚠️  Météo prévue indisponible pour ce relevé : {erreur}")
+    for ligne in prevues:
+        ligne["ingestion_timestamp"] = heure_releve
+    if prevues:
+        fichier = ajouter_au_fichier_du_jour(DOSSIER_BRONZE_METEO_PREVUE, jour, COLONNES_METEO_PREVUE, prevues)
+        print(f"✅ {len(prevues)} quarts d'heure de météo prévue ajoutés à {fichier}")
+
+
 def collecter_et_sauvegarder() -> Path:
     """
     Réaliser un relevé complet et l'ajouter aux fichiers CSV du jour.
     Renvoie le chemin du fichier Vélo'v mis à jour.
     """
-    # Étape 1 : Les trois sources de données.
-    # Vélo'v est indispensable : si son API est en panne, le script s'arrête en erreur
+    # Étape 1 : Vélo'v, avec plusieurs essais dans le quart d'heure.
+    # Vélo'v est indispensable : si son API reste en panne, le script s'arrête en erreur
     # (le passage apparaîtra en rouge dans GitHub Actions, ce qui nous alertera).
-    stations = collecter_etat_stations()
-    meteo = lire_meteo_sans_bloquer()
+    # Mais la météo vient d'un autre serveur : on l'enregistre quand même avant de
+    # s'arrêter, pour ne pas la perdre aussi (choix validé le 28/10/2026).
+    try:
+        stations = collecter_velov_avec_essais()
+    except Exception:
+        heure_releve = datetime.now(tz=timezone.utc)
+        print("❌ Vélo'v injoignable : on enregistre quand même la météo de ce quart d'heure.")
+        enregistrer_meteo(heure_releve, heure_releve.date().isoformat())
+        raise
     altitudes = lire_altitudes()
 
     # Étape 2 : On complète chaque ligne station avec son altitude
@@ -227,22 +285,7 @@ def collecter_et_sauvegarder() -> Path:
     }
     ajouter_au_fichier_du_jour(DOSSIER_BRONZE_FLUX, jour, COLONNES_FLUX, [ligne_flux])
 
-    if meteo is not None:
-        meteo["ingestion_timestamp"] = heure_releve
-        fichier_meteo = ajouter_au_fichier_du_jour(DOSSIER_BRONZE_METEO, jour, COLONNES_METEO, [meteo])
-        print(f"✅ Météo ajoutée à {fichier_meteo}")
-
-    # La météo prévue : une panne de ce flux ne bloque pas le relevé non plus
-    try:
-        prevues = collecter_meteo_prevue()
-    except (httpx.HTTPError, KeyError, ValueError) as erreur:
-        prevues = []
-        print(f"⚠️  Météo prévue indisponible pour ce relevé : {erreur}")
-    for ligne in prevues:
-        ligne["ingestion_timestamp"] = heure_releve
-    if prevues:
-        fichier = ajouter_au_fichier_du_jour(DOSSIER_BRONZE_METEO_PREVUE, jour, COLONNES_METEO_PREVUE, prevues)
-        print(f"✅ {len(prevues)} quarts d'heure de météo prévue ajoutés à {fichier}")
+    enregistrer_meteo(heure_releve, jour)
 
     # Étape 5 : Les données de mobilité du Grand Lyon (si un compte est configuré)
     mobilite = collecter_mobilite_grandlyon()

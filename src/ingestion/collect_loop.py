@@ -14,8 +14,9 @@ DÉROULEMENT :
   1. On attend le prochain quart d'heure (par exemple 10h15:00).
   2. On collecte un relevé (collect_bronze.py) et on l'enregistre sur GitHub.
   3. On recommence, jusqu'à atteindre la durée maximale prévue.
-Si une collecte échoue (API Vélo'v en panne), la boucle continue au quart d'heure
-suivant : une panne passagère ne doit pas arrêter tout l'historique.
+Si une collecte échoue (API Vélo'v en panne malgré les nouveaux essais), la boucle
+continue au quart d'heure suivant : une panne passagère ne doit pas arrêter tout
+l'historique. Ce qui a pu être relevé (la météo) est enregistré quand même.
 À la fin, le passage s'affiche en rouge dans GitHub s'il y a eu au moins un échec,
 pour que l'on soit prévenu.
 
@@ -88,13 +89,19 @@ def lancer_boucle() -> int:
         print(f"Prochaine collecte à {rendez_vous:%H:%M} UTC (attente {attente / 60:.0f} min)")
         time.sleep(max(attente, 0))
 
-        # Étape 2 : On collecte et on enregistre, sans laisser une panne arrêter la boucle
+        # Étape 2 : On collecte et on enregistre, sans laisser une panne arrêter la boucle.
+        # Même si la collecte échoue, on enregistre ce qui a pu être relevé
+        # (par exemple la météo quand Vélo'v est en panne).
         try:
             collecter_et_sauvegarder()
-            enregistrer_sur_github()
         except Exception as erreur:
             nb_echecs += 1
             print(f"❌ Échec de la collecte de {rendez_vous:%H:%M} : {erreur}")
+        try:
+            enregistrer_sur_github()
+        except Exception as erreur:
+            nb_echecs += 1
+            print(f"❌ Échec de l'enregistrement sur GitHub de {rendez_vous:%H:%M} : {erreur}")
 
     print(f"Fin du passage. Collectes en échec : {nb_echecs}")
     return nb_echecs

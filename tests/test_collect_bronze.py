@@ -77,3 +77,24 @@ def test_meteo_enregistree_meme_si_velov_en_panne(monkeypatch, tmp_path, sans_pa
     assert len(lignes) == 1 and lignes[0]["weather_temp_c"] == "9.5"
     assert lignes[0]["ingestion_timestamp"]
     assert not (tmp_path / "velov").exists()
+
+
+def test_colonne_ajoutee_en_cours_de_journee(tmp_path):
+    """Un fichier du jour à l'ancien format est réécrit une fois avec le nouvel en-tête."""
+    from src.ingestion.collect_bronze import ajouter_au_fichier_du_jour
+
+    (tmp_path / "2026-10-30.csv").write_text("a,b\n1,2\n", encoding="utf-8")
+    ajouter_au_fichier_du_jour(tmp_path, "2026-10-30", ["a", "b", "c"], [{"a": 3, "b": 4, "c": 5}])
+    ajouter_au_fichier_du_jour(tmp_path, "2026-10-30", ["a", "b", "c"], [{"a": 6, "b": 7, "c": 8}])
+    assert (tmp_path / "2026-10-30.csv").read_text(encoding="utf-8").splitlines() == [
+        "a,b,c", "1,2,", "3,4,5", "6,7,8"]
+
+
+def test_velos_electriques_et_mecaniques():
+    from src.ingestion.fetch_velov import compter_par_type
+
+    station = {"vehicle_types_available": [
+        {"vehicle_type_id": "mechanical", "count": 4}, {"vehicle_type_id": "electrical", "count": 2}]}
+    assert compter_par_type(station, "electrical") == 2
+    assert compter_par_type(station, "mechanical") == 4
+    assert compter_par_type({}, "electrical") is None

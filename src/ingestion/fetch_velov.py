@@ -127,12 +127,26 @@ def collecter_etat_stations() -> list[dict]:
                 "is_renting_raw": station.get("is_renting"),
                 "is_returning_raw": station.get("is_returning"),
                 "last_update_api": convertir_date_api(station.get("last_reported")),
+                # Détail des vélos disponibles par type (« electrical » / « mechanical »)
+                "available_ebikes_raw": compter_par_type(station, "electrical"),
+                "available_mechanical_bikes_raw": compter_par_type(station, "mechanical"),
                 # Identique pour toutes les stations : rangée à part par collect_bronze.py
                 "feed_last_updated_api": date_generation_flux,
             }
         )
 
     return lignes
+
+
+def compter_par_type(station: dict, type_velo: str) -> int | None:
+    """
+    Nombre de vélos disponibles d'un type donné dans la liste « vehicle_types_available »
+    du flux GBFS. Vide (None) si le flux ne donne pas ce détail pour la station.
+    """
+    types = station.get("vehicle_types_available")
+    if not types:
+        return None
+    return sum(t.get("count") or 0 for t in types if t.get("vehicle_type_id") == type_velo)
 
 
 # Ce bloc ne s'exécute que si on lance le script directement

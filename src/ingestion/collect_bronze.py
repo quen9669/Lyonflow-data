@@ -121,6 +121,10 @@ COLONNES_VELOV = [
     "is_renting_raw",
     "is_returning_raw",
     "last_update_api",
+    # Ajoutées le 30/10/2026 : parmi les vélos disponibles, combien sont électriques
+    # ou mécaniques (mesurer si l'assistance électrique fait remonter les collines)
+    "available_ebikes_raw",
+    "available_mechanical_bikes_raw",
 ]
 
 COLONNES_FLUX = [
@@ -210,10 +214,25 @@ def ajouter_au_fichier_du_jour(dossier: Path, jour: str, colonnes: list[str], li
     """
     Ajouter des lignes à la fin du fichier CSV du jour (mode « a » = append).
     La ligne d'en-tête (noms des colonnes) n'est écrite qu'à la création du fichier.
+    Si des colonnes ont été ajoutées depuis la création du fichier (en cours de
+    journée), il est réécrit une fois avec le nouvel en-tête, les anciennes lignes
+    gardant ces colonnes vides : sinon les nouvelles valeurs n'auraient pas de nom.
     """
     dossier.mkdir(parents=True, exist_ok=True)
     fichier_du_jour = dossier / f"{jour}.csv"
     fichier_est_nouveau = not fichier_du_jour.exists()
+    if not fichier_est_nouveau:
+        with fichier_du_jour.open(newline="", encoding="utf-8") as fichier:
+            lecteur = csv.DictReader(fichier)
+            if lecteur.fieldnames != colonnes:
+                anciennes_lignes = list(lecteur)
+                fichier_est_nouveau = True
+        if fichier_est_nouveau:
+            with fichier_du_jour.open("w", newline="", encoding="utf-8") as fichier:
+                ecrivain = csv.DictWriter(fichier, fieldnames=colonnes, extrasaction="ignore")
+                ecrivain.writeheader()
+                ecrivain.writerows(anciennes_lignes)
+            fichier_est_nouveau = False
     with fichier_du_jour.open("a", newline="", encoding="utf-8") as fichier:
         ecrivain = csv.DictWriter(fichier, fieldnames=colonnes, extrasaction="ignore")
         if fichier_est_nouveau:

@@ -1,0 +1,2 @@
+ingestion_timestamp,weather_time_api,weather_temp_c,weather_precipitation_mm,weather_rain_mm,weather_wind_kmh
+2026-11-02 00:00:00.000117+00:00,2026-11-02 00:00:00+00:00,6.8,0.0,0.0,9.3

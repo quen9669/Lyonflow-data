@@ -12,7 +12,10 @@ CE QU'IL VÉRIFIE, POUR CHAQUE FLUX :
   - le nombre de lignes de ce dernier relevé : trop faible = « INCOMPLET »
     (par exemple 12 stations Vélo'v au lieu de 467) ;
   - pour Vélo'v, l'heure de mise à jour annoncée par l'opérateur : si elle
-    n'avance plus, les données sont « FIGÉES » même si on les relève bien.
+    n'avance plus ET qu'aucune station n'a bougé depuis le relevé précédent,
+    les données sont « FIGÉES » même si on les relève bien. La nuit, l'heure
+    annoncée reste souvent bloquée 30 à 75 min alors que les vélos bougent :
+    ce n'est pas une panne, on ne donne donc plus l'alerte dans ce cas.
 
 CE QU'IL FAIT :
   - il écrit un tableau lisible dans le résumé du passage GitHub (onglet Actions) ;
@@ -82,6 +85,25 @@ def dernier_releve(dossier: Path) -> tuple[datetime | None, list[dict]]:
     return None, []
 
 
+def releve_precedent(dossier: Path, heure: datetime) -> list[dict]:
+    """Lignes du relevé juste avant « heure » (fichier du jour, puis de la veille…)."""
+    for fichier in sorted(dossier.glob("*.csv"), reverse=True):
+        with fichier.open(encoding="utf-8", newline="") as f:
+            lignes = [l for l in csv.DictReader(f) if lire_heure(l["ingestion_timestamp"]) < heure]
+        if lignes:
+            avant = max(lire_heure(l["ingestion_timestamp"]) for l in lignes)
+            return [l for l in lignes if lire_heure(l["ingestion_timestamp"]) == avant]
+    return []
+
+
+def stations_qui_bougent(lignes: list[dict], precedent: list[dict]) -> int:
+    """Nombre de stations dont les vélos ou places libres ont changé entre deux relevés."""
+    def comptes(l: dict) -> tuple:
+        return l.get("available_bikes_raw"), l.get("available_stands_raw")
+    avant = {l["station_id"]: comptes(l) for l in precedent}
+    return sum(1 for l in lignes if l["station_id"] in avant and avant[l["station_id"]] != comptes(l))
+
+
 def controler_flux(flux: Flux, dossier_bronze: Path, maintenant: datetime) -> dict:
     """Diagnostiquer un flux : état, heure du dernier relevé, retard, lignes, explication."""
     heure, lignes = dernier_releve(dossier_bronze / flux.dossier)
@@ -104,7 +126,10 @@ def controler_flux(flux: Flux, dossier_bronze: Path, maintenant: datetime) -> di
         annonces = [lire_heure(l["last_update_api"]) for l in lignes if l.get("last_update_api")]
         # L'heure par station n'est pas fiable (une station calme ne se signale pas) :
         # on regarde la station la plus récente.
-        if annonces and heure - max(annonces) > RETARD_MAX_OPERATEUR:
+        # Elle peut rester bloquée la nuit alors que les vélos bougent : on ne
+        # parle de données figées que si aucune station n'a bougé non plus.
+        if (annonces and heure - max(annonces) > RETARD_MAX_OPERATEUR
+                and stations_qui_bougent(lignes, releve_precedent(dossier_bronze / flux.dossier, heure)) == 0):
             return {**resultat, "etat": "FIGÉ",
                     "explication": "l'opérateur n'a mis à jour aucune station depuis "
                                    f"{int((heure - max(annonces)).total_seconds() // 60)} min"}

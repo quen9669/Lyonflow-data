@@ -1,0 +1,236 @@
+{
+  ".claude/settings.json": {
+    "mtime": 1793976164.2976236,
+    "seen": 1793976165.3179393,
+    "ast_hash": "0a0ef578e59e2bb38c69f1dcb49a0e1a",
+    "semantic_hash": ""
+  },
+  ".github/workflows/collect_15min.yml": {
+    "mtime": 1793976100.4697466,
+    "seen": 1793976165.3179464,
+    "ast_hash": "107346fcb1e9d38d27a063c9f63d7eea",
+    "semantic_hash": ""
+  },
+  ".github/workflows/collect_venues_weekly.yml": {
+    "mtime": 1793976100.4698834,
+    "seen": 1793976165.31795,
+    "ast_hash": "c2721189b3dff9ce9183880d5a24d6e4",
+    "semantic_hash": ""
+  },
+  ".github/workflows/health_check.yml": {
+    "mtime": 1793976100.4698834,
+    "seen": 1793976165.3179517,
+    "ast_hash": "f26ade7d29a03355c7611801f1124312",
+    "semantic_hash": ""
+  },
+  ".github/workflows/test_events.yml": {
+    "mtime": 1793976100.4698834,
+    "seen": 1793976165.3179536,
+    "ast_hash": "4c9307555eb46f8674b1c623542885c8",
+    "semantic_hash": ""
+  },
+  ".github/workflows/test_grandlyon.yml": {
+    "mtime": 1793976100.4698834,
+    "seen": 1793976165.3179545,
+    "ast_hash": "1b319a21ded5375b174befa650f03e5e",
+    "semantic_hash": ""
+  },
+  ".github/workflows/test_tcl.yml": {
+    "mtime": 1793976100.4698834,
+    "seen": 1793976165.3179557,
+    "ast_hash": "616c5f398d43950bfef835780f15ee69",
+    "semantic_hash": ""
+  },
+  ".github/workflows/test_venues.yml": {
+    "mtime": 1793976100.4698834,
+    "seen": 1793976165.3179572,
+    "ast_hash": "71494830c4bdc84de7ad97aa3a21746f",
+    "semantic_hash": ""
+  },
+  "pyproject.toml": {
+    "mtime": 1793976100.6892698,
+    "seen": 1793976165.317958,
+    "ast_hash": "bf5b1f4143a20f39ae48be5cb0d257a1",
+    "semantic_hash": ""
+  },
+  "src/__init__.py": {
+    "mtime": 1793976100.6892698,
+    "seen": 1793976165.3179593,
+    "ast_hash": "c7f12843e0e74d9dd1ab7a19abebd171",
+    "semantic_hash": ""
+  },
+  "src/ingestion/__init__.py": {
+    "mtime": 1793976100.691775,
+    "seen": 1793976165.3179605,
+    "ast_hash": "6a88ed9bc47ab02b284bb0b0fdd3f97e",
+    "semantic_hash": ""
+  },
+  "src/ingestion/collect_bronze.py": {
+    "mtime": 1793976100.6918,
+    "seen": 1793976165.3179622,
+    "ast_hash": "2b913105f0b3d6867b16786751f26884",
+    "semantic_hash": ""
+  },
+  "src/ingestion/collect_loop.py": {
+    "mtime": 1793976100.6918,
+    "seen": 1793976165.3179638,
+    "ast_hash": "40c76acdc1dcc71088c9fbec9ffc5a77",
+    "semantic_hash": ""
+  },
+  "src/ingestion/fetch_elevation.py": {
+    "mtime": 1793976100.6918,
+    "seen": 1793976165.3179648,
+    "ast_hash": "502d99bf7d7d2009c96f6ebfec7cc246",
+    "semantic_hash": ""
+  },
+  "src/ingestion/fetch_events.py": {
+    "mtime": 1793976100.6918,
+    "seen": 1793976165.317966,
+    "ast_hash": "3cc1992ce3aab39a7428948f44fa4980",
+    "semantic_hash": ""
+  },
+  "src/ingestion/fetch_grandlyon.py": {
+    "mtime": 1793976100.6918,
+    "seen": 1793976165.3179674,
+    "ast_hash": "30ec3146a5605da6c15ad2d3f785c07d",
+    "semantic_hash": ""
+  },
+  "src/ingestion/fetch_school_holidays.py": {
+    "mtime": 1793976100.6918,
+    "seen": 1793976165.3179684,
+    "ast_hash": "3faff5c57a01235cd73755289c4edcb2",
+    "semantic_hash": ""
+  },
+  "src/ingestion/fetch_tcl.py": {
+    "mtime": 1793976100.6918,
+    "seen": 1793976165.3179693,
+    "ast_hash": "b2407e5bb705a32fbd1a1e47ce94800d",
+    "semantic_hash": ""
+  },
+  "src/ingestion/fetch_velov.py": {
+    "mtime": 1793976100.6918,
+    "seen": 1793976165.3179708,
+    "ast_hash": "18a6dceb794047d3edf30f3913d2b774",
+    "semantic_hash": ""
+  },
+  "src/ingestion/fetch_venues.py": {
+    "mtime": 1793976100.6918,
+    "seen": 1793976165.3179715,
+    "ast_hash": "5087d7cb5ce51a12fe136fbb3fbb5911",
+    "semantic_hash": ""
+  },
+  "src/ingestion/fetch_weather.py": {
+    "mtime": 1793976100.6918,
+    "seen": 1793976165.3179727,
+    "ast_hash": "8ed13c1f8d7585ff8124c69ed551398b",
+    "semantic_hash": ""
+  },
+  "src/ingestion/migrate_to_reference.py": {
+    "mtime": 1793976100.6918,
+    "seen": 1793976165.317974,
+    "ast_hash": "9b3024fd1ce70a4f2dc2a8dcfc2ac081",
+    "semantic_hash": ""
+  },
+  "src/ingestion/referentiel.py": {
+    "mtime": 1793976100.6918,
+    "seen": 1793976165.3179753,
+    "ast_hash": "1dbb5250364e3656afbe01bc3ca3068a",
+    "semantic_hash": ""
+  },
+  "src/ingestion/test_events_access.py": {
+    "mtime": 1793976100.6918,
+    "seen": 1793976165.3179762,
+    "ast_hash": "3cfd86abfe3d19d21325f57fc1f929f0",
+    "semantic_hash": ""
+  },
+  "src/ingestion/test_grandlyon_access.py": {
+    "mtime": 1793976100.6918,
+    "seen": 1793976165.3179774,
+    "ast_hash": "c7d3e41f6bbfb98707ae338ec46b7a4a",
+    "semantic_hash": ""
+  },
+  "src/monitoring/__init__.py": {
+    "mtime": 1793976100.6918,
+    "seen": 1793976165.3179786,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": ""
+  },
+  "src/monitoring/check_health.py": {
+    "mtime": 1793976100.6924024,
+    "seen": 1793976165.3179796,
+    "ast_hash": "29d508e29eb0018e4c8fdd7ea80f34ff",
+    "semantic_hash": ""
+  },
+  "tests/__init__.py": {
+    "mtime": 1793976100.6924024,
+    "seen": 1793976165.3179808,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": ""
+  },
+  "tests/test_check_health.py": {
+    "mtime": 1793976100.6924639,
+    "seen": 1793976165.317982,
+    "ast_hash": "b072ffdd38902f16f23fc505db04b70b",
+    "semantic_hash": ""
+  },
+  "tests/test_collect_bronze.py": {
+    "mtime": 1793976100.6924639,
+    "seen": 1793976165.317983,
+    "ast_hash": "8b2475652dac1b9ba2e84ec2c5c588b0",
+    "semantic_hash": ""
+  },
+  "tests/test_fetch_events.py": {
+    "mtime": 1793976100.6924639,
+    "seen": 1793976165.3179843,
+    "ast_hash": "9cb8d1907e18d48779344e35f14ef2c2",
+    "semantic_hash": ""
+  },
+  "tests/test_fetch_grandlyon.py": {
+    "mtime": 1793976100.6924639,
+    "seen": 1793976165.3179853,
+    "ast_hash": "3a33a9543060e5757be9ed1e7044398f",
+    "semantic_hash": ""
+  },
+  "tests/test_fetch_school_holidays.py": {
+    "mtime": 1793976100.6924639,
+    "seen": 1793976165.3179862,
+    "ast_hash": "e3ca84278eadf7de8108c23a1769b059",
+    "semantic_hash": ""
+  },
+  "tests/test_fetch_tcl.py": {
+    "mtime": 1793976100.6924639,
+    "seen": 1793976165.3179874,
+    "ast_hash": "97f285a8e8194bf20fd3b5edf9cd301b",
+    "semantic_hash": ""
+  },
+  "tests/test_fetch_venues.py": {
+    "mtime": 1793976100.6924639,
+    "seen": 1793976165.3179884,
+    "ast_hash": "3f2dfbe653f0689665842df25add433c",
+    "semantic_hash": ""
+  },
+  "tests/test_fetch_weather.py": {
+    "mtime": 1793976100.6924639,
+    "seen": 1793976165.3179893,
+    "ast_hash": "b4e15a1d4c37b7b39bf14e8a4658fbd2",
+    "semantic_hash": ""
+  },
+  "tests/test_referentiel.py": {
+    "mtime": 1793976100.6924639,
+    "seen": 1793976165.31799,
+    "ast_hash": "8b4bf07db66a430bc6b75835465e52f4",
+    "semantic_hash": ""
+  },
+  "CLAUDE.md": {
+    "mtime": 1793976164.2867138,
+    "seen": 1793976165.3179915,
+    "ast_hash": "67d88e9d0760c3ba54c75dfd9551c1c5",
+    "semantic_hash": ""
+  },
+  "README.md": {
+    "mtime": 1793976100.4698834,
+    "seen": 1793976165.3179927,
+    "ast_hash": "4e9affb57c9e2ae3e13efbe4dcd7ed9a",
+    "semantic_hash": ""
+  }
+}

@@ -20,6 +20,15 @@ l'historique. Ce qui a pu être relevé (la météo) est enregistré quand même
 À la fin, le passage s'affiche en rouge dans GitHub s'il y a eu au moins un échec,
 pour que l'on soit prévenu.
 
+CHANGEMENT DE MACHINE APRÈS 3 ÉCHECS D'AFFILÉE (choix du 05/11/2026) :
+Le soir du 04/11, la machine GitHub n'a plus reçu de réponse du serveur Vélo'v
+pendant 5h15 (22 quarts d'heure perdus). Le passage suivant, sur une autre machine,
+a réussi 9 minutes après son démarrage. Désormais, après 3 collectes ratées
+d'affilée, le passage s'arrête tout de suite et relance un nouveau passage, donc
+une nouvelle machine (nouvelle adresse internet). Si la panne vient vraiment du
+Grand Lyon, cela ne coûte rien de plus ; si elle venait de la machine, on la quitte
+au bout de 45 minutes au lieu de 5h30.
+
 Lancement : uv run python -m src.ingestion.collect_loop
 """
 
@@ -36,6 +45,9 @@ INTERVALLE = timedelta(minutes=15)
 # Durée de vie d'un passage. GitHub coupe tout passage au bout de 6 heures :
 # on s'arrête avant, pour que le passage se termine proprement.
 DUREE_MAX = timedelta(hours=5, minutes=30)
+
+# Nombre de collectes ratées d'affilée au bout duquel on change de machine
+ECHECS_D_AFFILEE_AVANT_RELAIS = 3
 
 
 def prochain_quart_d_heure(maintenant: datetime) -> datetime:
@@ -79,6 +91,7 @@ def lancer_boucle() -> int:
     """
     fin_prevue = datetime.now(tz=timezone.utc) + DUREE_MAX
     nb_echecs = 0
+    echecs_d_affilee = 0
 
     while True:
         # Étape 1 : On attend le prochain quart d'heure pile
@@ -94,14 +107,25 @@ def lancer_boucle() -> int:
         # (par exemple la météo quand Vélo'v est en panne).
         try:
             collecter_et_sauvegarder()
+            echecs_d_affilee = 0
         except Exception as erreur:
             nb_echecs += 1
+            echecs_d_affilee += 1
             print(f"❌ Échec de la collecte de {rendez_vous:%H:%M} : {erreur}")
         try:
             enregistrer_sur_github()
         except Exception as erreur:
             nb_echecs += 1
             print(f"❌ Échec de l'enregistrement sur GitHub de {rendez_vous:%H:%M} : {erreur}")
+
+        # Étape 3 : Trop d'échecs d'affilée : on arrête ce passage pour que le suivant
+        # démarre sur une autre machine (l'étape « Relancer le passage suivant » s'en charge)
+        if echecs_d_affilee >= ECHECS_D_AFFILEE_AVANT_RELAIS:
+            print(
+                f"🔁 {echecs_d_affilee} collectes ratées d'affilée : "
+                "on passe le relais à une nouvelle machine."
+            )
+            break
 
     print(f"Fin du passage. Collectes en échec : {nb_echecs}")
     return nb_echecs

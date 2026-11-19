@@ -23,3 +23,11 @@ ingestion_timestamp,type,date_echeance,zone,polluant,indice,niveau
 2026-11-19 10:31:33.726060+00:00,depassement,2026-11-18,Bassin Lyon Nord-Isère,PM10,5,PAS DE DEPASSEMENT
 2026-11-19 10:31:33.726060+00:00,depassement,2026-11-19,Bassin Lyon Nord-Isère,PM10,5,PAS DE DEPASSEMENT
 2026-11-19 10:31:33.726060+00:00,depassement,2026-11-20,Bassin Lyon Nord-Isère,PM10,5,PAS DE DEPASSEMENT
+2026-11-19 16:00:38.935605+00:00,vigilance,2026-11-19,Bassin Lyon Nord-Isère,,1,Vert
+2026-11-19 16:00:38.935605+00:00,vigilance,2026-11-20,Bassin Lyon Nord-Isère,,1,Vert
+2026-11-19 16:00:38.935605+00:00,depassement,2026-11-18,Bassin Lyon Nord-Isère,O3,7,PAS DE DEPASSEMENT
+2026-11-19 16:00:38.935605+00:00,depassement,2026-11-19,Bassin Lyon Nord-Isère,O3,7,PAS DE DEPASSEMENT
+2026-11-19 16:00:38.935605+00:00,depassement,2026-11-20,Bassin Lyon Nord-Isère,O3,7,PAS DE DEPASSEMENT
+2026-11-19 16:00:38.935605+00:00,depassement,2026-11-18,Bassin Lyon Nord-Isère,PM10,5,PAS DE DEPASSEMENT
+2026-11-19 16:00:38.935605+00:00,depassement,2026-11-19,Bassin Lyon Nord-Isère,PM10,5,PAS DE DEPASSEMENT
+2026-11-19 16:00:38.935605+00:00,depassement,2026-11-20,Bassin Lyon Nord-Isère,PM10,5,PAS DE DEPASSEMENT
